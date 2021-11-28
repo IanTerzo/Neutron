@@ -5,7 +5,7 @@ Thanks for contributing! Neutron welcomes everyone to contribute, but first plea
 
 ## Getting Started
 
-Neutron is still in its Alpha phase and thus has many [to-dos]https://github.com/IanTerzo/Neutron/blob/main/TODO.md). The to-dos range from adding new HTML elements to recreating the DOM methods,  an easy way to get started coding is to see the description of a to-do. The description offers multiple details to the problem or task and where in the code it belongs.
+Neutron is still in its Alpha phase and thus has many [to-dos](https://github.com/IanTerzo/Neutron/blob/main/TODO.md). The to-dos range from adding new HTML elements to recreating the DOM methods,  an easy way to get started coding is to see the description of a to-do. The description offers multiple details to the problem or task and where in the code it belongs. https://github.com/IanTerzo/Neutron/blob/main/TODO.md
 
 
 ## Pull Requests And Commits 
