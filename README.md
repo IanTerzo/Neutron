@@ -3,9 +3,8 @@
 Make desktop applications using HTML and CSS with python
 
 ## What is Neutron
-Neutron will allow developers to design modern application in python using CSS and HTML in python. Neutron will provide a seamless integration with python and html, for example:
-
-    
+Neutron will allow developers to design modern applications in python using CSS and HTML. 
+For example:
 ```
 import Neutron
 
