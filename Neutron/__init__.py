@@ -16,6 +16,69 @@ html = """
 </html>
 """
 
+html = """
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+
+</head>
+<body>
+
+<script>
+
+    function bridge(func) {
+        pywebview.api.bridge(func)
+    }
+
+
+</script>
+</body>
+</html>
+"""
+
+global api_functions
+api_functions = {}
+
+
+class Api:
+    def __init__(self):
+        pass
+
+    def bridge(self, func):
+        if api_functions[func]:
+            api_functions[func]()
+
+
+def event(function):
+    if not str(function) in api_functions:
+        api_functions.update({str(function): function})
+    return f"bridge('{str(function)}')"
+
+
+# ELEMENTS #
+
+def Button(window, id, content="", **args):
+    soup = BeautifulSoup(window.webview.html, features="lxml")
+    elem = soup.new_tag('button', id=id, attrs=args)
+    elem.string = content
+    elem.id = id
+    soup.body.append(elem)
+    window.setHtml(soup)
+    return elem
+
+
+def Input(window, id, content="", **args):
+    soup = BeautifulSoup(window.webview.html, features="lxml")
+    elem = soup.new_tag('input', id=id, attrs=args)
+    elem.string = content
+    elem.id = id
+    soup.body.append(elem)
+    window.setHtml(soup)
+    return elem
+
+
+
 class Window:
     def __init__(self, title, css="def.css"):
         api = Api()
