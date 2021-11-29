@@ -4,8 +4,24 @@ Create modern cross-platform apps in HTML and CSS with python
 
 ## What is Neutron
 Neutron will allow developers to build complex python apps while using CSS and HTML for the design. Neutron will give full access to the DOM just as it would be in Javascript and will offer an easy scripting method to bind HTMl with Python.
-
+```
 For example:
+
+import Neutron
+
+win = Neutron.Window("Example", css="def.css")
+
+
+def setName():
+    win.getElementById("title").innerHTML = "Hello world!"
+
+
+Neutron.Header(win, id="title", content="Hello")
+Neutron.Button(win, id="submit", content="Submit", onclick=Neutron.event(setName))
+
+win.show()
+```
+A more complex example:
 
 ```
 import Neutron
