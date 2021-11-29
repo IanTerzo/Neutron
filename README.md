@@ -7,24 +7,6 @@ Neutron will allow developers to build complex python apps while using CSS and H
 
 For example:
 ```
-
-import Neutron
-
-win = Neutron.Window("Example", css="def.css")
-
-
-def setName():
-    win.getElementById("title").innerHTML = "Hello world!"
-
-
-Neutron.Header(win, id="title", content="Hello")
-Neutron.Button(win, id="submit", content="Submit", onclick=Neutron.event(setName))
-
-win.show()
-```
-A more complex example:
-
-```
 import Neutron
 
 win = Neutron.Window("Example", css="def.css")
@@ -59,6 +41,23 @@ Neutron is still in it's alpha and phase and many feature are not out yet, but i
 ### CSS
 As stated before Neutron allows developers to integrate CSS. Simply enter the CSS file's path in the Neutron.Window() object and then use CSS as you normally would.
 
+Another example:
+```
+
+import Neutron
+
+win = Neutron.Window("Example", css="def.css")
+
+
+def setName():
+    win.getElementById("title").innerHTML = "Hello world!"
+
+
+Neutron.Header(win, id="title", content="Hello")
+Neutron.Button(win, id="submit", content="Submit", onclick=Neutron.event(setName))
+
+win.show()
+```
  
 ## Contributing
 Contributions are welcome and in need! You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
