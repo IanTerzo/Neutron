@@ -9,7 +9,7 @@ html = """
 <meta charset="UTF-8">
 </head>
 <body>
-<div id="cover" style="position: fixed; height: 100%; width: 100%; top:0; left: 0; background: #000; z-index:9999;"></div>
+<!-- <div id="cover" style="position: fixed; height: 100%; width: 100%; top:0; left: 0; background: #000; z-index:9999;"></div> -->
 
 <script>
     function bridge(func) {
