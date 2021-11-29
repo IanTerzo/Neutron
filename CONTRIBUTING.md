@@ -10,9 +10,12 @@ Neutron is still in its Alpha phase and thus has many [to-dos](https://github.co
 
 ## Pull Requests And Commits 
 
-- Commits do not need to be small. 
+If a small change is needed feel free to commit, but keep in mind these things:
 
 - Have a good and explanatory name for your commit, e.g. no "Fixed code" or "Added feature".
   
-- Always test your new feature or code before making a commit.  
+- Always test your code before making a commit.  
+- 
+If you are planning on implementing a bigger feature please fork and clone the project to you machine where you can develop it, once your done commit the changes to your fork and make a pull request.'
+
 
