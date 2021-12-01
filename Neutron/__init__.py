@@ -1,6 +1,8 @@
 import webview
 from bs4 import BeautifulSoup
 from . import utils
+import inspect
+import sys
 
 html = """
 <!DOCTYPE html>
@@ -13,7 +15,6 @@ html = """
 <script>
     function bridge(func) {
         pywebview.api.bridge(func)
-
     }
 </script>
 </body>
@@ -41,38 +42,45 @@ def event(function):
 
 # ELEMENTS #
 
-def Button(window, id, innerHTML="", **args):
+def Button(window, id, content="", **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
     elem = soup.new_tag('button', id=id, attrs=args)
-    elem.string = innerHTML
+    elem.string = content
     elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
     return elem
 
 
-def Input(window, id, innerHTML="", **args):
+def Input(window, id, content="", **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
     elem = soup.new_tag('input', id=id, attrs=args)
-    elem.string = innerHTML
+    elem.string = content
     elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
     return elem
 
 
-def Header(window, id, innerHTML="", type=1, **args):
+def Header(window, id, content="", type=1, **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
     elem = soup.new_tag('h' + str(type), id=id, attrs=args)
-    elem.string = innerHTML
+    elem.string = content
     elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
+
     return elem
 
 
 def Div(window, id, children=[], **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
+
+    # Remove children from body
+    for child in children:
+        soup = str(soup).replace(str(child), "")
+
+    soup = BeautifulSoup(soup, features="lxml")
     elem = soup.new_tag('div', id=id, attrs=args)
     elem.id = id
     for child in children:
@@ -141,6 +149,18 @@ class Window:
             self.webview.evaluate_js(f"""document.body.innerHTML += '{html}';""")
         else:
             raise Exception(""""Window.append" can only be called while the window is running!""")
+
+    def getElementById(self, id):
+        if self.running:
+            elem = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}");"""))
+
+            if elem != "null":
+                return HTMlelement(self, id)
+            else:
+                return None
+
+        else:
+            raise Exception(""""Window.getElementById" can only be called while the window is running!""")
 
     def getElementById(self, id):
         if self.running:
