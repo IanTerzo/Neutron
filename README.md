@@ -30,7 +30,7 @@ win.display(f"""
       <input id="inputName">
       <button id="submitName" onclick="{Neutron.event(setName)}">Submit</button>
       <!-- OR-->
-      {Neutron.Button(win, id="submitName2", innerHTML="Submit", onclick=Neutron.event(setName))}
+      {Neutron.Button(win, id="submitName2", content="Submit", onclick=Neutron.event(setName))}
    </body>
 </html>
 """)
@@ -53,8 +53,8 @@ def setName():
     win.getElementById("title").innerHTML = "Hello world!"
 
 
-Neutron.Header(win, id="title", innerHTML="Hello")
-Neutron.Button(win, id="submit", innerHTML="Submit", onclick=Neutron.event(setName))
+Neutron.Header(win, id="title", content="Hello")
+Neutron.Button(win, id="submit", content="Submit", onclick=Neutron.event(setName))
 
 win.show()
 ```
