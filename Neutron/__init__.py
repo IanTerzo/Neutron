@@ -10,14 +10,11 @@ html = """
 </head>
 <body>
 <!-- <div id="cover" style="position: fixed; height: 100%; width: 100%; top:0; left: 0; background: #000; z-index:9999;"></div> -->
-
 <script>
     function bridge(func) {
         pywebview.api.bridge(func)
-        
+
     }
-
-
 </script>
 </body>
 </html>
@@ -44,30 +41,30 @@ def event(function):
 
 # ELEMENTS #
 
-def Button(window, id, content="", **args):
+def Button(window, id, innerHTML="", **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
     elem = soup.new_tag('button', id=id, attrs=args)
-    elem.string = content
+    elem.string = innerHTML
     elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
     return elem
 
 
-def Input(window, id, content="", **args):
+def Input(window, id, innerHTML="", **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
     elem = soup.new_tag('input', id=id, attrs=args)
-    elem.string = content
+    elem.string = innerHTML
     elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
     return elem
 
 
-def Header(window, id, content="", type=1, **args):
+def Header(window, id, innerHTML="", type=1, **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
     elem = soup.new_tag('h' + str(type), id=id, attrs=args)
-    elem.string = content
+    elem.string = innerHTML
     elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
