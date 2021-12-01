@@ -42,38 +42,51 @@ def event(function):
 
 # ELEMENTS #
 
-def Button(window, id, content="", **args):
+def Button(window, content="", id=None, type=1, **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
     elem = soup.new_tag('button', id=id, attrs=args)
     elem.string = content
-    elem.id = id
+    if id:
+        elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
     return elem
 
 
-def Input(window, id, content="", **args):
+def Input(window, content="", id=None, type=1, **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
     elem = soup.new_tag('input', id=id, attrs=args)
     elem.string = content
-    elem.id = id
+    if id:
+        elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
     return elem
 
 
-def Header(window, id, content="", type=1, **args):
+def Header(window, content="", id=None, type=1, **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
     elem = soup.new_tag('h' + str(type), id=id, attrs=args)
     elem.string = content
-    elem.id = id
+    if id:
+        elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
-
     return elem
 
 
-def Div(window, id, children=[], **args):
+def Paragraph(window, content="", id=None, type=1, **args):
+    soup = BeautifulSoup(window.webview.html, features="lxml")
+    elem = soup.new_tag('p' + str(type), id=id, attrs=args)
+    elem.string = content
+    if id:
+        elem.id = id
+    soup.body.append(elem)
+    window.setHtml(soup)
+    return elem
+
+
+def Div(window, id=None, children=[], **args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
 
     # Remove children from body
