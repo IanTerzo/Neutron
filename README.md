@@ -30,7 +30,7 @@ win.display(f"""
       <input id="inputName">
       <button id="submitName" onclick="{Neutron.event(setName)}">Submit</button>
       <!-- OR-->
-      {Neutron.Button(win, id="submitName2", content="Submit", onclick=Neutron.event(setName))}
+      {Neutron.Button(win, content="Submit", onclick=Neutron.event(setName))}
    </body>
 </html>
 """)
