@@ -30,10 +30,11 @@ Ideally it would be possible communicate between the Iframe and the main window.
 Creating a system to write CSS in the python code
 - [ ] Finish the HTMLelement class
 
-The `HTMLelement` class is supposed to contain all of the original HTMLelement attributes, right now it only contains value and innerHTML. Example:
+The `HTMLelement` class is supposed to contain all of the original HTMLelement attributes, right now it only contains value and innerHTML. 
+An attribute looks like this:
 
     def value_get(self):
-        return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").value;"""))
+        return self.getAttributes()['value']
 
     def value_set(self, val):
         self.setAttribute("value", val)
