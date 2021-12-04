@@ -133,7 +133,7 @@ class HTMlelement:
     innerHTML = property(innerHTML_get, innerHTML_set)
 
     def value_get(self):
-        return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").value;"""))
+        return self.getAttributes()['value']
 
     def value_set(self, val):
         self.setAttribute("value", val)
