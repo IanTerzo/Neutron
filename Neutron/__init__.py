@@ -50,7 +50,7 @@ def Button(window, content="", id=None, type=1, **args):
         elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
-    return elem
+    return HTMlelement(window, id, str(elem))
 
 
 def Input(window, content="", id=None, type=1, **args):
@@ -61,7 +61,7 @@ def Input(window, content="", id=None, type=1, **args):
         elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
-    return elem
+    return HTMlelement(window, id, str(elem))
 
 
 def Header(window, content="", id=None, type=1, **args):
@@ -72,7 +72,7 @@ def Header(window, content="", id=None, type=1, **args):
         elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
-    return elem
+    return HTMlelement(window, id, str(elem))
 
 
 def Paragraph(window, content="", id=None, type=1, **args):
@@ -83,7 +83,7 @@ def Paragraph(window, content="", id=None, type=1, **args):
         elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
-    return elem
+    return HTMlelement(window, id, str(elem))
 
 
 def Div(window, id=None, children=[], **args):
@@ -101,24 +101,28 @@ def Div(window, id=None, children=[], **args):
 
     soup.body.append(elem)
     window.setHtml(soup)
-    return elem
+    return HTMlelement(window, id, str(elem))
 
 
 class HTMlelement:
-    def __init__(self, window, id):
+    def __init__(self, window, id, elementHTML=None):
         self.window = window
+        self.elementHTML = elementHTML
         self.id = id
+
+    def __str__(self):
+        # elementHTML will be set to None if class is called on runtime
+        if self.elementHTML is not None:
+            return self.elementHTML
+        else:
+            return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").outerHTML;"""))
 
     def getAttributes(self):
         return self.window.webview.get_elements(f'#{self.id}')[0]
 
-    def value_get(self):
-        return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").value;"""))
-
-    def value_set(self, val):
-        self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").value = "{val}";""")
-
-    value = property(value_get, value_set)
+    def setAttribute(self, attribute, value):
+        self.window.webview.evaluate_js(
+            f""" '' + document.getElementById("{self.id}").setAttribute("{attribute}", "{value}");""")
 
     def innerHTML_get(self):
         return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").innerHTML;"""))
@@ -127,6 +131,14 @@ class HTMlelement:
         self.window.webview.evaluate_js(f"""document.getElementById("{self.id}").innerHTML = "{val}";""")
 
     innerHTML = property(innerHTML_get, innerHTML_set)
+
+    def value_get(self):
+        return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").value;"""))
+
+    def value_set(self, val):
+        self.setAttribute("value", val)
+
+    value = property(value_get, value_set)
 
 
 class Window:
