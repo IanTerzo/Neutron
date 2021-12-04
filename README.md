@@ -36,29 +36,31 @@ win.display(f"""
 """)
 win.show()
 ```
-Neutron is still in it's alpha and phase and many feature are not out yet, but it is important to know that **the examples shown in this repo are always working**.
-
-### CSS
-As stated before Neutron allows developers to integrate CSS. Simply enter the CSS file's path in the Neutron.Window() object and then use CSS as you normally would.
+Neutron is still in it's alpha and phase and many feature are not out yet, but it is important to know that **the examples shown in this repo are always working and updating**.
 
 Another example:
 ```
-
 import Neutron
 
 win = Neutron.Window("Example", css="def.css")
 
+HeaderObject = Neutron.Header(win, id="title", content="Hello")
+
 
 def setName():
-    win.getElementById("title").innerHTML = "Hello world!"
+    HeaderObject.setAttribute("style", "color: red;")
+    HeaderObject.innerHTML = "Hello world!"
+    win.getElementById("submit").innerHTML = "clicked!"
 
 
-Neutron.Header(win, id="title", content="Hello")
-Neutron.Button(win, id="submit", content="Submit", onclick=Neutron.event(setName))
+Neutron.Button(win, id="submit", content="Hi", onclick=Neutron.event(setName))
 
 win.show()
 ```
- 
+
+### CSS
+As stated before Neutron allows developers to integrate CSS. Simply enter the CSS file's path in the Neutron.Window() object and then use CSS as you normally would.
+
 ## Contributing
 Contributions are welcome and in need! You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
 
