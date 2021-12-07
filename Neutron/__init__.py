@@ -50,7 +50,7 @@ def Button(window, content="", id=None, type=1, **args):
         elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
-    return HTMlelement(window, id, str(elem))
+    return HTMlelement(window, id, elem)
 
 
 def Input(window, content="", id=None, type=1, **args):
@@ -61,7 +61,7 @@ def Input(window, content="", id=None, type=1, **args):
         elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
-    return HTMlelement(window, id, str(elem))
+    return HTMlelement(window, id, elem)
 
 
 def Header(window, content="", id=None, type=1, **args):
@@ -72,7 +72,7 @@ def Header(window, content="", id=None, type=1, **args):
         elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
-    return HTMlelement(window, id, str(elem))
+    return HTMlelement(window, id, elem)
 
 
 def Paragraph(window, content="", id=None, type=1, **args):
@@ -83,7 +83,7 @@ def Paragraph(window, content="", id=None, type=1, **args):
         elem.id = id
     soup.body.append(elem)
     window.setHtml(soup)
-    return HTMlelement(window, id, str(elem))
+    return HTMlelement(window, id, elem)
 
 
 def Div(window, id=None, children=[], **args):
@@ -101,7 +101,7 @@ def Div(window, id=None, children=[], **args):
 
     soup.body.append(elem)
     window.setHtml(soup)
-    return HTMlelement(window, id, str(elem))
+    return HTMlelement(window, id, elem)
 
 
 class HTMlelement:
@@ -118,7 +118,10 @@ class HTMlelement:
             return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").outerHTML;"""))
 
     def getAttributes(self):
-        return self.window.webview.get_elements(f'#{self.id}')[0]
+        if self.window.running:
+            return self.window.webview.get_elements(f'#{self.id}')[0]
+        else:
+            return self.elementHTML.attrs
 
     def setAttribute(self, attribute, value):
         self.window.webview.evaluate_js(
