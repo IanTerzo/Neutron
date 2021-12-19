@@ -113,7 +113,7 @@ class HTMlelement:
     def __str__(self):
         # elementHTML will be set to None if class is called on runtime
         if self.elementHTML is not None:
-            return self.elementHTML
+            return str(self.elementHTML)
         else:
             return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").outerHTML;"""))
 
