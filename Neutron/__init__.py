@@ -128,7 +128,7 @@ class HTMlelement:
 
     def innerHTML_set(self, val):
         self.window.webview.evaluate_js(f"""document.getElementById("{self.id}").innerHTML = "{val}";""")
-        
+
     innerHTML = property(innerHTML_get, innerHTML_set)
 
     def value_get(self):
@@ -141,15 +141,18 @@ class HTMlelement:
 
 
 class Window:
-    def __init__(self, title, css="def.css", min_size=(300, 300), size=(900, 600), fullscreen=False, ):
+    def __init__(self, title, css="def.css", min_size=(300, 300), size=(900, 600), fullscreen=False):
         api = Api()
         self.webview = webview.create_window(title, html=html, js_api=api, min_size=min_size, width=size[0],
                                              height=size[1], fullscreen=fullscreen)
         self.css = css
         self.running = False
+
+        # cover attributes
         self.covertime = 2000
         self.covercolor = '#fff'
         self.covercontent = ""
+        self.after_load = None
 
         self.resize = self.webview.resize
         self.toggle_fullscreen = self.webview.toggle_fullscreen
@@ -157,13 +160,17 @@ class Window:
     def load_handler(self, win):
         pass
 
-    def loader(self, source=None, color='#fff', duration=2000):
+    def loader(self, source=None, color='#fff', duration=2000, after=None):
         self.webview.background_color = color
         self.covercolor = color
         self.covertime = duration
 
         if source:
             self.covercontent = source
+
+        if after:
+            self.after_load = event(after)
+            print(self.after_load)
 
     def display(self, html=None, file=None):
         frame = inspect.currentframe()
@@ -192,11 +199,14 @@ class Window:
         soup = BeautifulSoup(self.webview.html, features="lxml")
 
         bridge = soup.new_tag('script')
-        bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none'}," + str(self.covertime) +")"
+        if self.after_load:
+            bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none';" +self.after_load+"}," + str(self.covertime) +")"
+        else:
+            bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none'}," + str(self.covertime) +")"
         soup.body.append(bridge)
 
         cover = soup.new_tag('div', id="cover", attrs={'style':'position: fixed; height: 100%; width: 100%; top:0; left: 0; background: ' +self.covercolor+ '; z-index:9999;'})
-        coverContent = BeautifulSoup(self.covercontent)
+        coverContent = BeautifulSoup(self.covercontent, features="lxml")
         cover.append(coverContent)
         soup.body.append(cover)
         
