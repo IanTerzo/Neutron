@@ -9,8 +9,15 @@ For example:
 ```
 import Neutron
 
-win = Neutron.Window("Example", css="def.css")
+win = Neutron.Window("Example", size=(600,100))
+NeutronLogo = "https://camo.githubusercontent.com/27afdb9e229abd7fae33de3db681fcc2c30f1e472881ca4c910ad655b38a3831/68747470733a2f2f692e6962622e636f2f7743394c7859772f4e657574726f6e2d6e6f62672e706e67"
 
+def afterResize():
+    # Set window to fullscreen once finished loading
+    win.toggle_fullscreen()
+
+# The loader covers while all the other elements and css load
+win.loader(source=f"<img src={NeutronLogo} style='{Neutron.utils.css.center()}'>", color="#353537", duration=3000, after=afterResize)
 
 
 def setName():
