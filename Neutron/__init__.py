@@ -1,8 +1,10 @@
+from logging import error, exception
 import webview
 from bs4 import BeautifulSoup
 from . import utils
 import inspect
 import sys
+
 
 html = """
 <!DOCTYPE html>
@@ -11,12 +13,6 @@ html = """
 <meta charset="UTF-8">
 </head>
 <body>
-<!-- <div id="cover" style="position: fixed; height: 100%; width: 100%; top:0; left: 0; background: #000; z-index:9999;"></div> -->
-<script>
-    function bridge(func) {
-        pywebview.api.bridge(func)
-    }
-</script>
 </body>
 </html>
 """
@@ -145,16 +141,29 @@ class HTMlelement:
 
 
 class Window:
-    def __init__(self, title, css="def.css", min_size=(300, 300), size=(900, 600), fullscreen=False):
+    def __init__(self, title, css="def.css", min_size=(300, 300), size=(900, 600), fullscreen=False, ):
         api = Api()
         self.webview = webview.create_window(title, html=html, js_api=api, min_size=min_size, width=size[0],
                                              height=size[1], fullscreen=fullscreen)
         self.css = css
         self.running = False
+        self.covertime = 2000
+        self.covercolor = '#fff'
+        self.covercontent = ""
+
+        self.resize = self.webview.resize
+        self.toggle_fullscreen = self.webview.toggle_fullscreen
 
     def load_handler(self, win):
-        css_src = open(self.css, "r").read()
-        win.load_css(css_src)
+        pass
+
+    def loader(self, source=None, color='#fff', duration=2000):
+        self.webview.background_color = color
+        self.covercolor = color
+        self.covertime = duration
+
+        if source:
+            self.covercontent = source
 
     def display(self, html=None, file=None):
         frame = inspect.currentframe()
@@ -164,22 +173,40 @@ class Window:
             # convert file content to f-string
             content = str(open(file, "r").read())
             oneLine = content.replace("\n", "")
-            soupSrc = eval(f"f'{oneLine}'", locals)
+            try:
+                soupSrc = eval(f"f'{oneLine}'", locals)
+            except Exception as e:
+                raise Exception("Error while parsing python code inside -> { }. Error: " + str(e))
+            
             
         elif html:
             soupSrc = html
         
-        soup = BeautifulSoup(soupSrc, features="lxml")
-        elem = soup.new_tag('script')
-        elem.string = "function bridge(func) {pywebview.api.bridge(func)}"
-        soup.body.append(elem)
-        self.webview.html = str(soup)
+        self.webview.html = soupSrc
 
     def setHtml(self, html):
 
         self.webview.html = str(html)
 
     def show(self):
+        soup = BeautifulSoup(self.webview.html, features="lxml")
+
+        bridge = soup.new_tag('script')
+        bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none'}," + str(self.covertime) +")"
+        soup.body.append(bridge)
+
+        cover = soup.new_tag('div', id="cover", attrs={'style':'position: fixed; height: 100%; width: 100%; top:0; left: 0; background: ' +self.covercolor+ '; z-index:9999;'})
+        coverContent = BeautifulSoup(self.covercontent)
+        cover.append(coverContent)
+        soup.body.append(cover)
+        
+        style = soup.new_tag('style')
+        style.string = open(self.css, "r").read()
+        soup.body.append(style)
+
+        self.webview.html = str(soup)
+
+
         self.running = True
         webview.start(self.load_handler, self.webview)
 
@@ -188,18 +215,6 @@ class Window:
             self.webview.evaluate_js(f"""document.body.innerHTML += '{html}';""")
         else:
             raise Exception(""""Window.append" can only be called while the window is running!""")
-
-    def getElementById(self, id):
-        if self.running:
-            elem = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}");"""))
-
-            if elem != "null":
-                return HTMlelement(self, id)
-            else:
-                return None
-
-        else:
-            raise Exception(""""Window.getElementById" can only be called while the window is running!""")
 
     def getElementById(self, id):
         if self.running:
