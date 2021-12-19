@@ -170,7 +170,6 @@ class Window:
 
         if after:
             self.after_load = event(after)
-            print(self.after_load)
 
     def display(self, html=None, file=None):
         frame = inspect.currentframe()
