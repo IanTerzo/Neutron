@@ -128,7 +128,7 @@ class HTMlelement:
 
     def innerHTML_set(self, val):
         self.window.webview.evaluate_js(f"""document.getElementById("{self.id}").innerHTML = "{val}";""")
-
+        
     innerHTML = property(innerHTML_get, innerHTML_set)
 
     def value_get(self):
