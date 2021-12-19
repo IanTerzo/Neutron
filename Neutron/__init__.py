@@ -156,12 +156,23 @@ class Window:
         css_src = open(self.css, "r").read()
         win.load_css(css_src)
 
-    def display(self, html):
-        soup = BeautifulSoup(html, features="lxml")
+    def display(self, html=None, file=None):
+        frame = inspect.currentframe()
+        locals = frame.f_back.f_locals
+
+        if file:
+            # convert file content to f-string
+            content = str(open(file, "r").read())
+            oneLine = content.replace("\n", "")
+            soupSrc = eval(f"f'{oneLine}'", locals)
+            
+        elif html:
+            soupSrc = html
+        
+        soup = BeautifulSoup(soupSrc, features="lxml")
         elem = soup.new_tag('script')
         elem.string = "function bridge(func) {pywebview.api.bridge(func)}"
         soup.body.append(elem)
-
         self.webview.html = str(soup)
 
     def setHtml(self, html):
