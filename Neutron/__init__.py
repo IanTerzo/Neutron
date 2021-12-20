@@ -158,7 +158,8 @@ class Window:
         self.toggle_fullscreen = self.webview.toggle_fullscreen
 
     def load_handler(self, win):
-        pass
+        if self.showafter:
+            self.showafter()
 
     def loader(self, source=None, color='#fff', duration=2000, after=None):
         self.webview.background_color = color
@@ -195,6 +196,8 @@ class Window:
         self.webview.html = str(html)
 
     def show(self):
+        self.showafter = after
+        
         soup = BeautifulSoup(self.webview.html, features="lxml")
 
         bridge = soup.new_tag('script')
