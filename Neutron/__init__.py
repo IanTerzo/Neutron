@@ -1,10 +1,12 @@
 from logging import error, exception
+from re import A
 import webview
 from bs4 import BeautifulSoup
+from webview import window
 from . import utils
 import inspect
 import sys
-
+import logging
 
 html = """
 <!DOCTYPE html>
@@ -17,9 +19,14 @@ html = """
 </html>
 """
 
+# Does not contain with global event handlers
+HTMLelementAttributes = ['value', 'accept', 'action', 'align', 'allow', 'alt', 'autocapitalize', 'autocomplete', 'autofocus', 'autoplay', 'background', 'bgcolor', 'border', 'buffered', 'capture', 'challenge', 'charset', 'checked', 'cite', 'className', 'code', 'codebase', 'color', 'cols', 'colspan', 'content', 'contenteditable', 'contextmenu', 'controls', 'coords', 'crossorigin', 'csp ', 'data', 'datetime', 'decoding', 'default', 'defer', 'dir', 'dirname', 'disabled', 'download', 'draggable', 'enctype', 'enterkeyhint', 'for_', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'http_equiv', 'icon', 'importance', 'integrity', 'intrinsicsize ', 'inputmode', 'ismap', 'itemprop', 'keytype', 'kind', 'label', 'lang', 'language ', 'loading ', 'list', 'loop', 'low', 'manifest', 'max', 'maxlength', 'minlength', 'media', 'method', 'min', 'multiple', 'muted', 'name', 'novalidate', 'open', 'optimum', 'pattern', 'ping', 'placeholder', 'poster', 'preload', 'radiogroup', 'readonly', 'referrerpolicy', 'rel', 'required', 'reversed', 'rows', 'rowspan', 'sandbox', 'scope', 'scoped', 'selected', 'shape', 'size', 'sizes', 'slot', 'span', 'spellcheck', 'src', 'srcdoc', 'srclang', 'srcset', 'start', 'step', 'style', 'summary', 'tabindex', 'target', 'title', 'translate', 'type', 'usemap', 'width', 'wrap']
+
 global api_functions
 api_functions = {}
 
+
+# PYTHON - JAVASCRIPT BRIDGE #
 
 class Api:
     def __init__(self):
@@ -29,12 +36,21 @@ class Api:
         if api_functions[func]:
             api_functions[func]()
 
-
 def event(function):
-    if not str(function) in api_functions:
-        api_functions.update({str(function): function})
-    return f"bridge('{str(function)}')"
+    if callable(function):
+        if not str(function) in api_functions:
+            api_functions.update({str(function): function})
+        return f"bridge('{str(function)}')"
+    else:
+        raise EventException("Event attribute is not a function!")
 
+# EXCEPTIONS #
+
+class EventException(Exception):
+    pass
+
+class WindowException(Exception):
+    pass
 
 # ELEMENTS #
 
@@ -112,17 +128,7 @@ class HTMlelement:
             return str(self.elementHTML)
         else:
             return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").outerHTML;"""))
-
-    def getAttributes(self):
-        if self.window.running:
-            return self.window.webview.get_elements(f'#{self.id}')[0]
-        else:
-            return self.elementHTML.attrs
-
-    def setAttribute(self, attribute, value):
-        self.window.webview.evaluate_js(
-            f""" '' + document.getElementById("{self.id}").setAttribute("{attribute}", "{value}");""")
-        
+    
     def AddEventListener(self, eventHandler, NeutronEvent):
         if not self.window.running:
                 eventHandler = "on" + eventHandler
@@ -135,22 +141,32 @@ class HTMlelement:
             self.window.webview.evaluate_js(
             f""" '' + document.getElementById("{self.id}").addEventListener("{eventHandler}", {NeutronEvent});""");
 
+
+    # Does not work with global event handlers!!
+    def getAttributes(self):
+        if self.window.running:
+            return self.window.webview.get_elements(f'#{self.id}')[0]
+        else:
+            return self.elementHTML.attrs
+    
+    # Does not work with global event handlers!!
+    def setAttribute(self, attribute, value):
+        self.window.webview.evaluate_js(
+            f""" '' + document.getElementById("{self.id}").setAttribute("{attribute}", "{value}");""")
+
     def innerHTML_get(self):
         return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").innerHTML;"""))
 
     def innerHTML_set(self, val):
         self.window.webview.evaluate_js(f"""document.getElementById("{self.id}").innerHTML = "{val}";""")
-
+    
     innerHTML = property(innerHTML_get, innerHTML_set)
 
-    def value_get(self):
-        return self.getAttributes()['value']
+    for attribute in HTMLelementAttributes:
+        exec(f"{attribute} = property(lambda self: self.getAttributes()['{attribute}'], lambda self, val: self.setAttribute('{attribute}', val))")
+    
 
-    def value_set(self, val):
-        self.setAttribute("value", val)
-
-    value = property(value_get, value_set)
-
+    
 
 class Window:
     def __init__(self, title, css="def.css", min_size=(300, 300), size=(900, 600), fullscreen=False):
@@ -160,7 +176,7 @@ class Window:
         self.css = css
         self.running = False
 
-        # cover attributes
+        # Cover attributes
         self.covertime = 2000
         self.covercolor = '#fff'
         self.covercontent = ""
@@ -189,27 +205,25 @@ class Window:
         locals = frame.f_back.f_locals
 
         if file:
-            # convert file content to f-string
+            # Convert file content to f-string
             content = str(open(file, "r").read())
             oneLine = content.replace("\n", "")
             try:
                 soupSrc = eval(f"f'{oneLine}'", locals)
             except Exception as e:
-                raise Exception("Error while parsing python code inside -> { }. Error: " + str(e))
-            
-            
+                raise WindowException("Error while parsing python code inside -> { }. Error: " + str(e))
+
         elif html:
             soupSrc = html
         
         self.webview.html = soupSrc
 
     def setHtml(self, html):
-
         self.webview.html = str(html)
 
-    def show(self):
+    def show(self, after=None):
         self.showafter = after
-        
+
         soup = BeautifulSoup(self.webview.html, features="lxml")
 
         bridge = soup.new_tag('script')
@@ -238,7 +252,7 @@ class Window:
         if self.running:
             self.webview.evaluate_js(f"""document.body.innerHTML += '{html}';""")
         else:
-            raise Exception(""""Window.append" can only be called while the window is running!""")
+            raise WindowException(""""Window.append" can only be called while the window is running!""")
 
     def getElementById(self, id):
         if self.running:
@@ -247,7 +261,14 @@ class Window:
             if elem != "null":
                 return HTMlelement(self, id)
             else:
+                logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
 
         else:
-            raise Exception(""""Window.getElementById" can only be called while the window is running!""")
+            soup = BeautifulSoup(self.webview.html, features="lxml")
+            # check if element exists
+            if soup.select(f'#{id}') != []:
+                return HTMlelement(self, id)
+            else:
+                logging.warning(f'HTMLelement with id "{id}" was not found!')
+                return None
