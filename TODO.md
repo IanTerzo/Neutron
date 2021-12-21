@@ -27,20 +27,10 @@ Ideally it would be possible communicate between the Iframe and the main window.
 ### OTHER
 - [ ] In-python css 
 
+- [ ] Finish Neutron.utils.css 
+
 Creating a system to write CSS in the python code
 - [ ] Finish the HTMLelement class
-
-The `HTMLelement` class is supposed to contain all of the original HTMLelement attributes, right now it only contains value and innerHTML. 
-An attribute looks like this:
-
-    def value_get(self):
-        return self.getAttributes()['value']
-
-    def value_set(self, val):
-        self.setAttribute("value", val)
-
-    value = property(value_get, value_set)
-- [ ] Wait for all elements to load before display
 
 This is still a blank spot, an idea is to put a `cover`  div on top of the screen and then hide it when all the elements and CSS are fully loaded.
 
