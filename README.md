@@ -3,7 +3,18 @@
 Create modern cross-platform apps in HTML and CSS with Python
 
 ## What is Neutron
-Neutron will allow developers to build complex Python apps while using CSS and HTML for the design. Neutron will give full access to the DOM just as it would be in Javascript and will offer an easy scripting method to bind HTML with Python.
+Neutron allows developers to build complex Python apps while using CSS and HTML for the design. Neutron will give full access to the DOM just as it would be in Javascript and will offer an easy scripting method to bind HTML with Python.
+
+## Installation
+At the moment there is no straightforward installation method using pip. So for now, it is only possible like this.
+
+1 **Clone this repository.**
+
+2 **Move the Neutron folder into the TEMPLATE folder.**
+
+3 **Run main.py**
+
+You now have a template project to work with. For more examples read below.
 
 ## Examples
 For example:
@@ -102,6 +113,4 @@ As stated before Neutron allows developers to integrate CSS. Simply enter the CS
 ## Contributing
 Contributions are welcome and in need! You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
 
-## Installation
-At the moment there is no straight forward installation method. It is always possible to just clone the repo.
 
