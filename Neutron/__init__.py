@@ -122,6 +122,18 @@ class HTMlelement:
     def setAttribute(self, attribute, value):
         self.window.webview.evaluate_js(
             f""" '' + document.getElementById("{self.id}").setAttribute("{attribute}", "{value}");""")
+        
+    def AddEventListener(self, eventHandler, NeutronEvent):
+        if not self.window.running:
+                eventHandler = "on" + eventHandler
+                soup = BeautifulSoup(self.window.webview.html, features="lxml")
+                # Create a new attribute for the event (i.e onclick)
+                soup.find(id=self.id)[eventHandler] = NeutronEvent
+                
+                self.window.webview.html = str(soup)
+        else:
+            self.window.webview.evaluate_js(
+            f""" '' + document.getElementById("{self.id}").addEventListener("{eventHandler}", {NeutronEvent});""");
 
     def innerHTML_get(self):
         return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").innerHTML;"""))
