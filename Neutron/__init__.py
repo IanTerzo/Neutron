@@ -177,9 +177,9 @@ class Window:
         self.running = False
 
         # Cover attributes
-        self.covertime = 2000
+        self.covertime = 3000
         self.covercolor = '#fff'
-        self.covercontent = ""
+        self.covercontent = "<h1 style='None'>Loading...</h1>"
         self.after_load = None
 
         self.resize = self.webview.resize
@@ -189,13 +189,12 @@ class Window:
         if self.showafter:
             self.showafter()
 
-    def loader(self, source=None, color='#fff', duration=2000, after=None):
+    def loader(self, content="<h1 style='None'>Loading...</h1>", color='#fff', duration=3000, after=None):
         self.webview.background_color = color
         self.covercolor = color
         self.covertime = duration
 
-        if source:
-            self.covercontent = source
+        self.covercontent = content
 
         if after:
             self.after_load = event(after)
