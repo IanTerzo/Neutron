@@ -14,10 +14,31 @@ At the moment there is no straightforward installation method using pip. So for 
 
 3 **Run main.py**
 
-You now have a template project to work with. For more examples read below.
-
 ## Examples
-For example:
+
+For a fully set up example project see [TEMPLATE](https://github.com/IanTerzo/Neutron/tree/main/TEMPLATE). The project is build how it's intended, meaning it has a CSS and HTML file for the design and a Python file for the logic. (It is comparable to how websites using JavaScript are built).
+
+Althought not recommended for big project, it is possible to create an app using only python.
+```
+import Neutron
+
+win = Neutron.Window("Example", css="def.css")
+
+HeaderObject = Neutron.Header(win, id="title", content="Hello")
+
+
+def setName():
+    HeaderObject.setAttribute("style", "color: red;")
+    HeaderObject.innerHTML = "Hello world!"
+    win.getElementById("submit").innerHTML = "clicked!"
+
+
+Neutron.Button(win, id="submit", content="Hi", onclick=Neutron.event(setName))
+
+win.show()
+```
+
+Another example featuring in-python HTML:
 ```
 import Neutron
 
@@ -46,29 +67,8 @@ win.display(f"""
 """)
 win.show()
 ```
-Neutron is still in it's alpha and phase and many feature are not out yet, but it is important to know that **the examples shown in this repo are always working and updating**.
 
-Another example:
-```
-import Neutron
-
-win = Neutron.Window("Example", css="def.css")
-
-HeaderObject = Neutron.Header(win, id="title", content="Hello")
-
-
-def setName():
-    HeaderObject.setAttribute("style", "color: red;")
-    HeaderObject.innerHTML = "Hello world!"
-    win.getElementById("submit").innerHTML = "clicked!"
-
-
-Neutron.Button(win, id="submit", content="Hi", onclick=Neutron.event(setName))
-
-win.show()
-```
-
-First example but with a loader:
+To resolve the loading time issue Neutron features a loader system.:
 ```
 import Neutron
 
@@ -101,9 +101,6 @@ win.display(f"""
 """)
 win.show()
 ```
-
-### CSS
-As stated before Neutron allows developers to integrate CSS. Simply enter the CSS file's path in the Neutron.Window() object and then use CSS as you normally would.
 
 ## Contributing
 Contributions are welcome and in need! You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
