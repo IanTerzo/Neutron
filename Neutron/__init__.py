@@ -361,7 +361,13 @@ class HTMlelement:
             self.window.webview.evaluate_js(
             f""" '' + document.getElementById("{self.id}").addEventListener("{eventHandler}", {NeutronEvent});""");
 
-
+    def appendChild(self, html):
+        self.window.webview.evaluate_js(f"""document.getElementById("{self.id}").innerHTML += '{html}';""")
+        return html
+    
+    def append(self, html):
+        self.window.webview.evaluate_js(f"""document.getElementById("{self.id}").innerHTML += '{html}';""")
+        
     # Does not work with global event handlers!!
     def getAttributes(self):
         if self.window.running:
@@ -468,6 +474,13 @@ class Window:
         webview.start(self.load_handler, self.webview)
 
     def appendChild(self, html):
+        if self.running:
+            self.webview.evaluate_js(f"""document.body.innerHTML += '{html}';""")
+            return html
+        else:
+            raise WindowException(""""Window.append" can only be called while the window is running!""")
+            
+    def append(self, html):
         if self.running:
             self.webview.evaluate_js(f"""document.body.innerHTML += '{html}';""")
         else:
