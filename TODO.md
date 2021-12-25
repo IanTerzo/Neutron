@@ -2,21 +2,6 @@
 # Neutron to-dos list
 
 ### HTML
-- [ ] Finish all HTML elements
-
-In Neutron are HTML elements made like this:
-```
-def Button(window, id, content="", **args):
-    soup = BeautifulSoup(window.webview.html, features="lxml")
-    elem = soup.new_tag('button', id=id, attrs=args)
-    elem.string = content
-    elem.id = id
-    soup.body.append(elem)
-    window.setHtml(soup)
-    return elem
-```
-To create a new Element simply edit the functions name and the tag in `soup.new_tag()`.
-
 
 - [ ] Finish all DOM methods
 
@@ -42,5 +27,5 @@ A system to let the user create his own loading animation with CSS.
 
 ### COMPLETED TO-DOS
 - [x] JavaScript-Python bridge
-
+- [x] Finish all HTML elements
 
