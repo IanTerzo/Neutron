@@ -54,66 +54,286 @@ class WindowException(Exception):
 
 # ELEMENTS #
 
-def Button(window, content="", id=None, type=1, **args):
+def __CreateElement(window, tag, content, id, args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
-    elem = soup.new_tag('button', id=id, attrs=args)
-    elem.string = content
+    elem = soup.new_tag(tag, attrs=args)
     if id:
         elem.id = id
+
+    if type(content) == HTMlelement:
+        soup = BeautifulSoup(str(soup).replace(str(content), "", 1), features="lxml")
+        contentParsed = BeautifulSoup(str(content), 'html.parser')
+        elem.append(contentParsed)
+    else:
+        elem.string = str(content)
+    
     soup.body.append(elem)
+
+    # Remove old element
+
     window.setHtml(soup)
     return HTMlelement(window, id, elem)
 
-
-def Input(window, content="", id=None, type=1, **args):
-    soup = BeautifulSoup(window.webview.html, features="lxml")
-    elem = soup.new_tag('input', id=id, attrs=args)
-    elem.string = content
-    if id:
-        elem.id = id
-    soup.body.append(elem)
-    window.setHtml(soup)
-    return HTMlelement(window, id, elem)
-
-
-def Header(window, content="", id=None, type=1, **args):
-    soup = BeautifulSoup(window.webview.html, features="lxml")
-    elem = soup.new_tag('h' + str(type), id=id, attrs=args)
-    elem.string = content
-    if id:
-        elem.id = id
-    soup.body.append(elem)
-    window.setHtml(soup)
-    return HTMlelement(window, id, elem)
-
-
-def Paragraph(window, content="", id=None, type=1, **args):
-    soup = BeautifulSoup(window.webview.html, features="lxml")
-    elem = soup.new_tag('p' + str(type), id=id, attrs=args)
-    elem.string = content
-    if id:
-        elem.id = id
-    soup.body.append(elem)
-    window.setHtml(soup)
-    return HTMlelement(window, id, elem)
-
-
-def Div(window, id=None, children=[], **args):
+# For HTML elements ment for containing other elements i.e div
+def __CreateContainer(window, tag, children, id, args):
     soup = BeautifulSoup(window.webview.html, features="lxml")
 
     # Remove children from body
     for child in children:
-        soup = str(soup).replace(str(child), "")
+        soup = str(soup)[::-1].replace(str(child)[::-1], "", 1)[::-1]
 
     soup = BeautifulSoup(soup, features="lxml")
-    elem = soup.new_tag('div', id=id, attrs=args)
+    elem = soup.new_tag(tag, id=id, attrs=args)
     elem.id = id
     for child in children:
-        elem.append(child)
-
+        # Make children into tags
+        childParsed = BeautifulSoup(str(child), 'html.parser')
+        elem.append(childParsed)
+    
     soup.body.append(elem)
     window.setHtml(soup)
     return HTMlelement(window, id, elem)
+
+# Content sectioning #
+
+def Adress(window, children=[], id=None, **args):
+   return __CreateContainer(window, "adress", children, id, args)
+
+def Article(window, children=[], id=None, **args):
+    return __CreateContainer(window, "article", children, id, args)
+
+
+def Aside(window, children=[], id=None, **args):
+    return __CreateContainer(window, "aside", children, id, args)
+
+def Footer(window, children=[], id=None, **args):
+    return __CreateContainer(window, "footer", children, id, args)
+
+def Header(window, content="", id=None, **args):
+    return __CreateElement(window, "header", content, id, args)
+
+def H(window, content="", id=None, type=1, **args):
+    return __CreateElement(window, "h" + str(type), content, id, args)
+
+def h1(window, content="", id=None):
+    return H(window=window, content=content, id=id, type=1)
+H1 = h1
+
+def h2(window, content="", id=None):
+    return H(window=window, content=content, id=id, type=2)   
+H2 = h2
+
+def h3(window, content="", id=None):
+    return H(window=window, content=content, id=id, type=3)  
+H3 = h3
+
+def h4(window, content="", id=None):
+    return H(window=window, content=content, id=id, type=4)  
+H4 = h4
+
+def h5(window, content="", id=None):
+    return H(window=window, content=content, id=id, type=5)  
+H5 = h5
+
+def h6(window, content="", id=None):
+    return H(window=window, content=content, id=id, type=6)  
+    
+def Main(window, children=[], id=None, **args):
+    return __CreateContainer(window, "main", children, id, args)
+
+def Nav(window, children=[], id=None, **args):
+    return __CreateContainer(window, "nav", children, id, args)
+    
+def Section(window, children=[], id=None, **args):
+    return __CreateContainer(window, "section", children, id, args)
+
+# Text content #
+
+def Blockquote(window, content="", id=None, **args):
+    return __CreateElement(window, "blockquote", content, id, args)
+
+def Dd(window, content="", id=None, **args):
+    return __CreateElement(window, "dd", content, id, args)
+
+def Div(window, id=None, children=[], **args):
+    return __CreateContainer(window, "div", children, id, args)
+
+def Dl(window, content="", id=None, **args):
+    return __CreateElement(window, "dl", content, id, args)
+
+def Dt(window, content="", id=None, **args):
+    return __CreateElement(window, "dt", content, id, args)
+
+def Figcaption(window, content="", id=None, **args):
+    return __CreateElement(window, "figcaption", content, id, args)
+
+def Figure(window, id=None, children=[], **args):
+    return __CreateContainer(window, "Figure", children, id, args)
+
+def Hr(window, content="", id=None, **args):
+    return __CreateElement(window, "Hr", content, id, args)
+
+def Li(window, content="", id=None, **args):
+    return __CreateElement(window, "li", content, id, args)
+
+def Ol(window, id=None, children=[], **args):
+    return __CreateContainer(window, "ol", children, id, args)
+
+def P(window, content="", id=None, **args):
+    return __CreateElement(window, "p", content, id, args)
+
+def P(window, content="", id=None, **args):
+    return __CreateElement(window, "p", content, id, args)
+
+def Pre(window, content="", id=None, **args):
+    return __CreateElement(window, "pre", content, id, args)
+
+def Ul(window, id=None, children=[], **args):
+    return __CreateContainer(window, "Ul", children, id, args)
+
+# Image and multimedia #
+
+def Area(window, content="", id=None, **args):
+    return __CreateElement(window, "area", content, id, args)
+
+def Audio(window, content="", id=None, **args):
+    return __CreateElement(window, "audio", content, id, args)
+
+def Img(window, content="", id=None, **args):
+    return __CreateElement(window, "img", content, id, args)
+
+def Map(window, id=None, children=[], **args):
+    return __CreateContainer(window, "Map", children, id, args)
+
+def Track(window, content="", id=None, **args):
+    return __CreateElement(window, "track", content, id, args)
+
+def Video(window, content="", id=None, **args):
+    return __CreateElement(window, "video", content, id, args)
+
+# Embedded content #
+
+def Embed(window, content="", id=None, **args):
+    return __CreateElement(window, "embed", content, id, args)
+
+def Iframe(window, content="", id=None, **args):
+    return __CreateElement(window, "iframe", content, id, args)
+
+def Object(window, content="", id=None, **args):
+    return __CreateElement(window, "object", content, id, args)
+
+def Param(window, content="", id=None, **args):
+    return __CreateElement(window, "param", content, id, args)
+
+def Picture(window, id=None, children=[], **args):
+    return __CreateContainer(window, "picture", children, id, args)
+
+def Portal(window, content="", id=None, **args):
+    return __CreateElement(window, "portal", content, id, args)
+
+def Source(window, content="", id=None, **args):
+    return __CreateElement(window, "source", content, id, args)
+
+# SVG and MathML #
+
+def Svg(window, content="", id=None, **args):
+    return __CreateElement(window, "svg", content, id, args)
+
+def Math(window, content="", id=None, **args):
+    return __CreateElement(window, "math", content, id, args)
+
+# Table content #
+
+def Caption(window, content="", id=None, **args):
+    return __CreateElement(window, "caption", content, id, args)
+
+def Col(window, content="", id=None, **args):
+    return __CreateElement(window, "col", content, id, args)
+
+def Colgroup(window, content="", id=None, **args):
+    return __CreateElement(window, "colgroup", content, id, args)
+
+def Table(window, id=None, children=[], **args):
+    return __CreateContainer(window, "table", children, id, args)
+
+def Tbody(window, id=None, children=[], **args):
+    return __CreateContainer(window, "tbody", children, id, args)
+
+def Td(window, content="", id=None, **args):
+    return __CreateElement(window, "td", content, id, args)
+
+def Tfoot(window, id=None, children=[], **args):
+    return __CreateContainer(window, "tfoot", children, id, args)
+
+def Th(window, content="", id=None, **args):
+    return __CreateElement(window, "th", content, id, args)
+
+def Thead(window, id=None, children=[], **args):
+    return __CreateContainer(window, "thead", children, id, args)
+
+def Tr(window, id=None, children=[], **args):
+    return __CreateContainer(window, "tr", children, id, args)
+
+# Forms #
+
+def Button(window, content="", id=None, **args):
+    return __CreateElement(window, "button", content, id, args)
+
+def Datalist(window, id=None, children=[], **args):
+    return __CreateContainer(window, "datalist", children, id, args)
+
+def Fieldset(window, id=None, children=[], **args):
+    return __CreateContainer(window, "fieldset", children, id, args)
+
+def Form(window, id=None, children=[], **args):
+    return __CreateContainer(window, "form", children, id, args)
+
+def Input(window, content="", id=None, **args):
+    return __CreateElement(window, "input", content, id, args)
+
+def Label(window, content="", id=None, **args):
+    return __CreateElement(window, "label", content, id, args)
+
+def Legend(window, content="", id=None, **args):
+    return __CreateElement(window, "legend", content, id, args)
+
+def Meter(window, content="", id=None, **args):
+    return __CreateElement(window, "meter", content, id, args)
+
+def Optgroup(window, id=None, children=[], **args):
+    return __CreateContainer(window, "optgroup", children, id, args)
+
+def Option(window, content="", id=None, **args):
+    return __CreateElement(window, "option", content, id, args)
+
+def Output(window, id=None, children=[], **args):
+    return __CreateContainer(window, "output", children, id, args)
+
+def Progress(window, content="", id=None, **args):
+    return __CreateElement(window, "progress", content, id, args)
+
+def Select(window, id=None, children=[], **args):
+    return __CreateContainer(window, "select", children, id, args)
+
+def Textarea(window, content="", id=None, **args):
+    return __CreateElement(window, "textarea", content, id, args)
+
+# Interactive elements #
+
+def Details(window, id=None, children=[], **args):
+    return __CreateContainer(window, "details", children, id, args)
+
+def Dialog(window, content="", id=None, **args):
+    return __CreateElement(window, "dialog", content, id, args)
+
+def Menu(window, id=None, children=[], **args):
+    return __CreateContainer(window, "menu", children, id, args)
+
+def Summary(window, content="", id=None, **args):
+    return __CreateElement(window, "summary", content, id, args)
+
+# Web componets #
+     #soon
 
 
 class HTMlelement:
