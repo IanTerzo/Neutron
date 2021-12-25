@@ -1,18 +1,23 @@
 ![](https://i.ibb.co/wC9LxYw/Neutron-nobg.png)
 
-Create modern cross-platform apps in HTML and CSS with Python
+Neutron allows developers to build native Python apps while using CSS and HTML for the design. Based on [pywebview](https://github.com/r0x0r/pywebview) for it's native GUI window and JavaScript-Python communication.
 
-## What is Neutron
-Neutron allows developers to build native Python apps while using CSS and HTML for the design. Neutron will give full access to the DOM just as it would be in Javascript and  offer an easy scripting method to bind HTML with Python.
-
+- You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
 ## Installation
-At the moment there is no straightforward installation method using pip. So for now, it is only possible like this.
+> **Note:** At the moment there is no straightforward installation method using pip. So for now, it is only possible like this.
 
-1 **Clone this repository.**
 
-2 **Move the Neutron folder into the TEMPLATE folder.**
+**Clone or download this repository.**
 
-3 **Run main.py**
+```
+git clone https://github.com/IanTerzo/Neutron.git
+```
+
+**Move the [Neutron](https://github.com/IanTerzo/Neutron/tree/main/Neutron) folder into the [TEMPLATE](https://github.com/IanTerzo/Neutron/tree/main/TEMPLATE) folder.**
+
+Neutron --> TEMPLATE
+
+**Run main.py**.
 
 ## Examples
 
@@ -21,7 +26,7 @@ For a fully set up example project see [TEMPLATE](https://github.com/IanTerzo/Ne
 ### Other examples
 
 Althought not recommended for big project, it is possible to create an app using only python.
-```
+```py
 import Neutron
 
 win = Neutron.Window("Example", css="def.css")
@@ -41,7 +46,7 @@ win.show()
 ```
 
 Another example featuring in-python HTML:
-```
+```py
 import Neutron
 
 win = Neutron.Window("Example")
@@ -71,7 +76,7 @@ win.show()
 ```
 
 To resolve the loading time issue Neutron features a loader system.:
-```
+```py
 import Neutron
 
 win = Neutron.Window("Example", size=(600,100))
@@ -104,7 +109,5 @@ win.display(f"""
 win.show()
 ```
 
-## Contributing
-Contributions are welcome and in need! You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
 
 
