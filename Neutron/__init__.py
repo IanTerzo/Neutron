@@ -115,28 +115,23 @@ def Header(window, content="", id=None, **args):
 def H(window, content="", id=None, type=1, **args):
     return __CreateElement(window, "h" + str(type), content, id, args)
 
-def h1(window, content="", id=None):
-    return H(window=window, content=content, id=id, type=1)
-H1 = h1
+def H1(window, content="", id=None, **args):
+    return H(window=window, content=content, id=id, type=1, **args)
 
-def h2(window, content="", id=None):
-    return H(window=window, content=content, id=id, type=2)   
-H2 = h2
+def H2(window, content="", id=None, **args):
+    return H(window=window, content=content, id=id, type=2, **args)   
 
-def h3(window, content="", id=None):
-    return H(window=window, content=content, id=id, type=3)  
-H3 = h3
+def H3(window, content="", id=None, **args):
+    return H(window=window, content=content, id=id, type=3, **args)  
 
-def h4(window, content="", id=None):
-    return H(window=window, content=content, id=id, type=4)  
-H4 = h4
+def H4(window, content="", id=None, **args):
+    return H(window=window, content=content, id=id, type=4, **args)  
 
-def h5(window, content="", id=None):
-    return H(window=window, content=content, id=id, type=5)  
-H5 = h5
+def H5(window, content="", id=None, **args):
+    return H(window=window, content=content, id=id, type=5, **args)  
 
-def h6(window, content="", id=None):
-    return H(window=window, content=content, id=id, type=6)  
+def H6(window, content="", id=None, **args):
+    return H(window=window, content=content, id=id, type=6, **args)    
     
 def Main(window, children=[], id=None, **args):
     return __CreateContainer(window, "main", children, id, args)
