@@ -507,3 +507,4 @@ class Window:
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
+ 
