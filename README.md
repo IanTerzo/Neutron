@@ -3,7 +3,7 @@
 Create modern cross-platform apps in HTML and CSS with Python
 
 ## What is Neutron
-Neutron allows developers to build complex Python apps while using CSS and HTML for the design. Neutron will give full access to the DOM just as it would be in Javascript and will offer an easy scripting method to bind HTML with Python.
+Neutron allows developers to build native Python apps while using CSS and HTML for the design. Neutron will give full access to the DOM just as it would be in Javascript and  offer an easy scripting method to bind HTML with Python.
 
 ## Installation
 At the moment there is no straightforward installation method using pip. So for now, it is only possible like this.
