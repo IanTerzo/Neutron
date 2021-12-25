@@ -18,6 +18,8 @@ At the moment there is no straightforward installation method using pip. So for 
 
 For a fully set up example project see [TEMPLATE](https://github.com/IanTerzo/Neutron/tree/main/TEMPLATE). The project is build how it's intended, meaning it has a CSS and HTML file for the design and a Python file for the logic. (It is comparable to how websites using JavaScript are built).
 
+### Other examples
+
 Althought not recommended for big project, it is possible to create an app using only python.
 ```
 import Neutron
