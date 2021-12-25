@@ -441,32 +441,37 @@ class Window:
     def setHtml(self, html):
         self.webview.html = str(html)
 
+    def hide(self):
+        self.webview.hide()
+
     def show(self, after=None):
         self.showafter = after
 
-        soup = BeautifulSoup(self.webview.html, features="lxml")
+        if self.running != True:
+            soup = BeautifulSoup(self.webview.html, features="lxml")
+            bridge = soup.new_tag('script')
+            if self.after_load:
+                bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none';" +self.after_load+"}," + str(self.covertime) +")"
+            else:
+                bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none'}," + str(self.covertime) +")"
+            
+            soup.body.append(bridge)
 
-        bridge = soup.new_tag('script')
-        if self.after_load:
-            bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none';" +self.after_load+"}," + str(self.covertime) +")"
+            cover = soup.new_tag('div', id="cover", attrs={'style':'position: fixed; height: 100%; width: 100%; top:0; left: 0; background: ' +self.covercolor+ '; z-index:9999;'})
+
+            coverContent = BeautifulSoup(str(self.covercontent), features="lxml")
+            cover.append(coverContent)
+            soup.body.append(cover)
+            style = soup.new_tag('style')
+            style.string = open(self.css, "r").read()
+            soup.body.append(style)
+
+            self.webview.html = str(soup)
+
+            self.running = True
+            webview.start(self.load_handler, self.webview)
         else:
-            bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none'}," + str(self.covertime) +")"
-        soup.body.append(bridge)
-
-        cover = soup.new_tag('div', id="cover", attrs={'style':'position: fixed; height: 100%; width: 100%; top:0; left: 0; background: ' +self.covercolor+ '; z-index:9999;'})
-        coverContent = BeautifulSoup(self.covercontent, features="lxml")
-        cover.append(coverContent)
-        soup.body.append(cover)
-        
-        style = soup.new_tag('style')
-        style.string = open(self.css, "r").read()
-        soup.body.append(style)
-
-        self.webview.html = str(soup)
-
-
-        self.running = True
-        webview.start(self.load_handler, self.webview)
+            self.webview.show()
 
     def appendChild(self, html):
         if self.running:
