@@ -7,6 +7,7 @@ from . import utils
 import inspect
 import sys
 import logging
+import keyboard
 
 html = """
 <!DOCTYPE html>
@@ -448,6 +449,8 @@ class Window:
         self.showafter = after
 
         if self.running != True:
+            keyboard.block_key("f5")
+            
             soup = BeautifulSoup(self.webview.html, features="lxml")
             bridge = soup.new_tag('script')
             if self.after_load:
