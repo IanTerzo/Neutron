@@ -1,11 +1,16 @@
 import webview
 from bs4 import BeautifulSoup
-import inspect
-import logging 
 import keyboard
 
-from . import utils
+import inspect
+import logging 
+
+import sys
+import os
+
 from . import elements
+from . import utils
+
 
 
 html = """
@@ -61,7 +66,7 @@ class Window:
         # Cover attributes
         self.covertime = 3000
         self.covercolor = '#fff'
-        self.covercontent = "<h1 style='None'>Loading...</h1>"
+        self.covercontent = "<h1>Loading...</h1>"
         self.after_load = None
 
         self.resize = self.webview.resize
@@ -87,7 +92,13 @@ class Window:
 
         if file:
             # Convert file content to f-string
-            content = str(open(file, "r").read())
+            
+            # Check if program is being run as an exe
+            if getattr(sys, 'frozen', False):
+                content = str(open(os.path.join(sys._MEIPASS, file), "r").read())
+            else:
+                content = str(open(file, "r").read())
+
             oneLine = content.replace("\n", "")
             try:
                 soupSrc = eval(f"f'{oneLine}'", locals)
@@ -126,7 +137,14 @@ class Window:
             cover.append(coverContent)
             soup.body.append(cover)
             style = soup.new_tag('style')
-            style.string = open(self.css, "r").read()
+
+            # Check if program is being run as an exe
+            if getattr(sys, 'frozen', False):
+                style.string = open(os.path.join(sys._MEIPASS, self.css), "r").read()
+            else:
+                style.string = open(self.css, "r").read()
+
+            
             soup.body.append(style)
 
             self.webview.html = str(soup)
