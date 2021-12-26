@@ -1,12 +1,14 @@
 import webview
 from bs4 import BeautifulSoup
-import keyboard
 
 import inspect
 import logging 
 
 import sys
 import os
+
+if not sys.platform.startswith('linux'):
+    import keyboard
 
 from . import elements
 from . import utils
@@ -120,7 +122,8 @@ class Window:
         self.showafter = after
 
         if self.running != True:
-            keyboard.block_key("f5")
+            if not sys.platform.startswith('linux'):
+                keyboard.block_key("f5")
             
             soup = BeautifulSoup(self.webview.html, features="lxml")
             bridge = soup.new_tag('script')
