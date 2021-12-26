@@ -7,10 +7,14 @@ NOTE: HTMLelement class is located at the bottom of this file.
 """
 
 def __CreateElement(window, tag, content, id, args):
+    
     soup = BeautifulSoup(window.webview.html, features="lxml")
-    elem = soup.new_tag(tag, attrs=args)
+
     if id:
-        elem.id = id
+        elem = soup.new_tag(tag, id=id, attrs=args)
+    else:
+        elem = soup.new_tag(tag, attrs=args)
+    
 
     if type(content) == HTMlelement:
         soup = BeautifulSoup(str(soup).replace(str(content), "", 1), features="lxml")
@@ -35,8 +39,12 @@ def __CreateContainer(window, tag, children, id, args):
         soup = str(soup)[::-1].replace(str(child)[::-1], "", 1)[::-1]
 
     soup = BeautifulSoup(soup, features="lxml")
-    elem = soup.new_tag(tag, id=id, attrs=args)
-    elem.id = id
+    
+    if id:
+        elem = soup.new_tag(tag, id=id, attrs=args)
+    else:
+        elem = soup.new_tag(tag, attrs=args)
+
     for child in children:
         # Make children into tags
         childParsed = BeautifulSoup(str(child), 'html.parser')
