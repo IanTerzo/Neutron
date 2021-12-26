@@ -17,7 +17,11 @@ git clone https://github.com/IanTerzo/Neutron.git
 
 Neutron --> TEMPLATE
 
-**Run main.py**.
+**Install requirements**.
+
+```
+pip install -r requirements.txt
+```
 
 ## Examples
 
