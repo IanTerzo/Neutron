@@ -8,7 +8,7 @@ Neutron allows developers to build native Python apps along with CSS and HTML fo
 **Install package**.
 
 ```
-pip install gui-neutron
+pip install Neutron-Web
 ```
 > If you are getting the error `ModuleNotFoundError: No module named 'gi'`, then follow the instructions found here for installing pygobject for your platform https://pygobject.readthedocs.io/en/latest/getting_started.html#gettingstarted.
 
