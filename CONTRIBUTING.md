@@ -12,7 +12,7 @@ Another way to get started is to fix issues, you can find new issues in the issu
 
 ## Pull Requests And Commits 
 
-If a small change is needed feel free to commit, but keep in mind these things:
+If a small change is needed feel free to commit directly, but keep in mind these things:
 
 - Have a good and explanatory name for your commit, e.g. no "Fixed code" or "Added feature".
   
