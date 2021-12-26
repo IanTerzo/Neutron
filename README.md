@@ -31,7 +31,7 @@ import Neutron
 
 win = Neutron.Window("Example", css="def.css")
 
-HeaderObject = Neutron.Header(win, id="title", content="Hello")
+HeaderObject = Neutron.elements.Header(win, id="title", content="Hello")
 
 
 def setName():
@@ -40,7 +40,7 @@ def setName():
     win.getElementById("submit").innerHTML = "clicked!"
 
 
-Neutron.Button(win, id="submit", content="Hi", onclick=Neutron.event(setName))
+Neutron.elements.Button(win, id="submit", content="Hi", onclick=Neutron.event(setName))
 
 win.show()
 ```
