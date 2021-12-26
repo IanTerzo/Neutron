@@ -1,10 +1,10 @@
 ![](https://i.ibb.co/wC9LxYw/Neutron-nobg.png)
 
-Neutron allows developers to build native Python apps while using CSS and HTML for the design. Based on [pywebview](https://github.com/r0x0r/pywebview) for it's native GUI window and JavaScript-Python communication.
+Neutron allows developers to build native Python apps along with CSS and HTML. Based on [pywebview](https://github.com/r0x0r/pywebview) for it's native GUI window and JavaScript-Python communication.
 
 - You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
 ## Installation
-> **Note:** At the moment there is no straightforward installation method using pip. So for now, it is only possible like this.
+> **Note:** At the moment there is no straightforward installation method using pip. So for now, it is only possible to build Neutron from source.
 
 
 **Clone or download this repository.**
@@ -25,7 +25,7 @@ For a fully set up example project see [TEMPLATE](https://github.com/IanTerzo/Ne
 
 ### Other examples
 
-Althought not recommended for big project, it is possible to create an app using only python.
+Althought not recommended for big projects, it's possible to create an app using only Python.
 ```py
 import Neutron
 
@@ -75,7 +75,7 @@ win.display(f"""
 win.show()
 ```
 
-To resolve the loading time issue Neutron features a loader system.:
+To resolve the loading time issue, Neutron features a loader system seen here:
 ```py
 import Neutron
 
