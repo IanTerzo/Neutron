@@ -1,6 +1,6 @@
 ![](https://i.ibb.co/wC9LxYw/Neutron-nobg.png)
 
-Neutron allows developers to build native Python apps along with CSS and HTML. Based on [pywebview](https://github.com/r0x0r/pywebview) for it's native GUI window and JavaScript-Python communication.
+Neutron allows developers to build native Python apps along with CSS and HTML for frontend design. Based on [pywebview](https://github.com/r0x0r/pywebview) for it's native GUI window and JavaScript-Python communication.
 
 - You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
 ## Installation
