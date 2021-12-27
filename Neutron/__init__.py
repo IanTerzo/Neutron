@@ -10,8 +10,8 @@ import os
 if not sys.platform.startswith('linux'):
     import keyboard
 
-from . import elements
-from . import utils
+from Neutron import elements
+from Neutron import utils
 
 
 

@@ -4,24 +4,14 @@ Neutron allows developers to build native Python apps along with CSS and HTML fo
 
 - You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
 ## Installation
-> **Note:** At the moment there is no straightforward installation method using pip. So for now, it is only possible to build Neutron from source.
 
-
-**Clone or download this repository.**
+**Install package**.
 
 ```
-git clone https://github.com/IanTerzo/Neutron.git
+pip install Neutron-Web
 ```
+> If you are getting the error `ModuleNotFoundError: No module named 'gi'`, then follow the instructions found here for installing pygobject for your platform https://pygobject.readthedocs.io/en/latest/getting_started.html#gettingstarted.
 
-**Move the [Neutron](https://github.com/IanTerzo/Neutron/tree/main/Neutron) folder into the [TEMPLATE](https://github.com/IanTerzo/Neutron/tree/main/TEMPLATE) folder.**
-
-Neutron --> TEMPLATE
-
-**Install requirements**.
-
-```
-pip install -r requirements.txt
-```
 ## Building
 
 > **Note:** This has only been tested on windows.

@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "Neutron-Web"
+version = "0.1.0"
+description = "Neutron allows developers to build native Python apps along with CSS and HTML for frontend design. Based on pywebview for it's native GUI window and JavaScript-Python communicat."
+authors = ["IanTerzo"]
+license = "MIT"
+packages = [
+    { include = "Neutron", from = "." },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pywebview = "^3.5"
+beautifulsoup4 = "^4.10.0"
+keyboard = "^0.13.5"
+lxml = "^4.7.1"
+pycairo = "^1.20.1"
+PyGObject = "^3.42.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
