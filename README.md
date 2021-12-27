@@ -4,23 +4,9 @@ Neutron allows developers to build native Python apps along with CSS and HTML fo
 
 - You can easily get started contributing by reading [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md)
 ## Installation
-> **Note:** At the moment there is no straightforward installation method using pip. So for now, it is only possible to build Neutron from source.
-
-
-**Clone or download this repository.**
 
 ```
-git clone https://github.com/IanTerzo/Neutron.git
-```
-
-**Move the [Neutron](https://github.com/IanTerzo/Neutron/tree/main/Neutron) folder into the [TEMPLATE](https://github.com/IanTerzo/Neutron/tree/main/TEMPLATE) folder.**
-
-Neutron --> TEMPLATE
-
-**Install requirements**.
-
-```
-pip install -r requirements.txt
+pip install Neutron-Web
 ```
 ## Building
 
