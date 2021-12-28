@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import codecs
 import os
 
-with codecs.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "PYPI-README.md"), encoding="utf-8") as fh:
+with codecs.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
 DESCRIPTION = 'Streaming video data via networks'
