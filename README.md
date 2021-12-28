@@ -8,7 +8,12 @@ You can get started contributing via [CONTRIBUTING.md](https://github.com/IanTer
 ```
 pip install Neutron-Web
 ```
-## Building
+> **Note:** use `import Neutron`
+
+
+> `import Neutron-Web` <-- WRONG
+
+## Building to EXE/APP/ELF
 
 > **Note:** This has only been tested on windows.
 
@@ -107,6 +112,3 @@ win.display(f"""
 """)
 win.show()
 ```
-
-
-
