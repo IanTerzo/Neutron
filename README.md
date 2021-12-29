@@ -20,7 +20,7 @@ pip install Neutron-Web
 To build a Neutron project you first need pyinstaller, install pyinstaller throught pip: `pip install pyinstaller`. Then run the script below in your command prompt/terminal.
 
 ```
-pyinstaller YOUR_PYTHON_FILE.py --noconsole --onefile --add-data="YOUR_HTML_FILE.html;." --add-data="YOUR_CSS_FILE.css;." --hidden-import pywebview --hidden-import beautifulsoup4 --hidden-import keyboard
+pyinstaller YOUR_PYTHON_FILE.py --noconsole --onefile --add-data="YOUR_HTML_FILE.html;." --add-data="YOUR_CSS_FILE.css;."
 ```
 
 ## Examples
