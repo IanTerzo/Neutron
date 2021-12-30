@@ -58,7 +58,7 @@ class WindowException(Exception):
   
 
 class Window:
-    def __init__(self, title, css="def.css", min_size=(300, 300), size=(900, 600), fullscreen=False):
+    def __init__(self, title, css=None, min_size=(300, 300), size=(900, 600), fullscreen=False):
         api = Api()
         self.webview = webview.create_window(title, html=html, js_api=api, min_size=min_size, width=size[0],
                                              height=size[1], fullscreen=fullscreen)
@@ -143,11 +143,11 @@ class Window:
 
             # Check if program is being run as an exe
             if getattr(sys, 'frozen', False):
-                style.string = open(os.path.join(sys._MEIPASS, self.css), "r").read()
+                if self.css: style.string = open(os.path.join(sys._MEIPASS, self.css), "r").read()
             else:
-                style.string = open(self.css, "r").read()
+                if self.css:
+                    style.string = open(self.css, "r").read()
 
-            
             soup.body.append(style)
 
             self.webview.html = str(soup)
