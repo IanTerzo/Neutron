@@ -76,6 +76,7 @@ class Window:
         self.running = False
 
         # Cover attributes
+        self.usecover = False
         self.covertime = 3000
         self.covercolor = '#fff'
         self.covercontent = "<h1>Loading...</h1>"
@@ -89,6 +90,7 @@ class Window:
             self.showafter()
 
     def loader(self, content="<h1 style='None'>Loading...</h1>", color='#fff', duration=3000, after=None):
+        self.usecover = True
         self.webview.background_color = color
         self.covercolor = color
         self.covertime = duration
@@ -156,9 +158,10 @@ class Window:
             cover = soup.new_tag('div', id="cover", attrs={
                 'style': 'position: fixed; height: 100%; width: 100%; top:0; left: 0; background: ' + self.covercolor + '; z-index:9999;'})
 
-            coverContent = BeautifulSoup(str(self.covercontent), features="lxml")
-            cover.append(coverContent)
-            soup.body.append(cover)
+            if self.usecover == True:
+                coverContent = BeautifulSoup(str(self.covercontent), features="lxml")
+                cover.append(coverContent)
+                soup.body.append(cover)
 
             # CSS stylesheet #
             style = soup.new_tag('style')
@@ -208,3 +211,4 @@ class Window:
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
+
