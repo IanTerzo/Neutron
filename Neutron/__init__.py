@@ -171,8 +171,6 @@ class Window:
                     style.string = open(self.css, "r").read()
             soup.body.append(style)
 
-            print(soup)
-
             self.webview.html = str(soup)
             self.running = True
             webview.start(self.load_handler, self.webview)
