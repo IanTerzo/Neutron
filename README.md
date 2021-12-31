@@ -6,12 +6,12 @@ You can get started contributing via [CONTRIBUTING.md](https://github.com/IanTer
 ## Installation
 
 ```
-pip install Neutron-Web
+pip install neutron-web
 ```
 > **Note:** use `import Neutron`
 
 
-> `import Neutron-Web` <-- WRONG
+> `import neutron-web` <-- WRONG
 
 ## Building to EXE/APP/ELF
 
