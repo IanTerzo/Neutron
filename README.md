@@ -29,7 +29,7 @@ For a fully set up example project see [TEMPLATE](https://github.com/IanTerzo/Ne
 
 ### Other examples
 
-Althought not recommended for big projects, it's possible to create an app using only Python.
+Althought not recommended for big projects, it's possible to create an app using only a Python file.
 ```py
 import Neutron
 
