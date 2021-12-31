@@ -5,12 +5,10 @@ import os
 with codecs.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-DESCRIPTION = 'Streaming video data via networks'
-
 # Setting up
 setup(
-    name="Neutron-Web",
-    version='0.2.0',
+    name="neutron-web",
+    version='0.1.6',
     author="IanTerzo (Ian Baldelli)",
     author_email="ian.baldelli@gmail.com",
     description="Create modern cross-platform apps in Python using HTML and CSS",
