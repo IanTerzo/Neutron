@@ -308,7 +308,7 @@ class HTMlelement:
         else:
             return str(self.window.webview.evaluate_js(f""" '' + document.getElementById("{self.id}").outerHTML;"""))
     
-    def AddEventListener(self, eventHandler, NeutronEvent):
+    def addEventListener(self, eventHandler, NeutronEvent):
         if not self.window.running:
                 eventHandler = "on" + eventHandler
                 soup = BeautifulSoup(self.window.webview.html, features="lxml")
