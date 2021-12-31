@@ -105,7 +105,7 @@ class Window:
         locals = frame.f_back.f_locals
 
         if file:
-            # Convert file content to f-string
+            # Convert file content to f-string, used for Neutron.event()
 
             # Check if program is being run as an exe
             if getattr(sys, 'frozen', False):
@@ -113,11 +113,11 @@ class Window:
             else:
                 content = str(open(file, "r").read())
 
-            oneLine = content.replace("\n", "")
+            strippedHTML = content.replace("\n", "")
             try:
-                soupSrc = eval(f"f'{oneLine}'", locals)
+                soupSrc = eval(f"fr'''{strippedHTML}'''", locals)
             except Exception as e:
-                raise WindowException("Error while parsing python code inside -> { }. Error: " + str(e))
+                raise WindowException("Error while parsing python code in HTML. Error: " + str(e))
 
         elif html:
             soupSrc = html
