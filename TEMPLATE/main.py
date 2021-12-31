@@ -8,6 +8,6 @@ def onClick():
     win.getElementById("title").innerHTML = "Hello:" + win.getElementById("inputName").value
 
 
-win.getElementById("submitName").AddEventListener("click", Neutron.event(onClick))
+win.getElementById("submitName").addEventListener("click", Neutron.event(onClick))
 
 win.show()
