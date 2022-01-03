@@ -121,8 +121,14 @@ class Window:
 
         elif html:
             soupSrc = html
+        
+        soup = BeautifulSoup(soupSrc, features="lxml")
+        bodyContent = soup.body.find_all()
 
-        self.webview.html = soupSrc
+        for element in bodyContent:
+            elements.createNeutronId(element)
+
+        self.webview.html = str(soup)
 
     def setHtml(self, html):
         self.webview.html = str(html)
@@ -195,10 +201,10 @@ class Window:
 
     def getElementById(self, id):
         if self.running:
-            elem = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}");"""))
+            elementNeutronID = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}").className;"""))
 
-            if elem != "null":
-                return elements.HTMlelement(self, id)
+            if elementNeutronID != "null":
+                return elements.HTMlelement(self, elementNeutronID)
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
@@ -206,9 +212,18 @@ class Window:
         else:
             soup = BeautifulSoup(self.webview.html, features="lxml")
             # check if element exists
-            if soup.select(f'#{id}') != []:
-                return elements.HTMlelement(self, id)
+            element = soup.select(f'#{id}')
+            if element != []:
+                NeutronID = element[0].get('class')[0]
+                return elements.HTMlelement(self, NeutronID)
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
 
+    def getElementsByTagName(self, name):
+        if self.running:
+
+            ElementsNeutronID = self.webview.evaluate_js("var elementsNeutronID = []; Array.from(document.getElementsByTagName('" + name + "')).forEach(function(item) { elementsNeutronID.push(item.className) }); '' + elementsNeutronID;")
+            return [elements.HTMlelement(self, NeutronID) for NeutronID in ElementsNeutronID.split(",")]
+        else:
+            pass
