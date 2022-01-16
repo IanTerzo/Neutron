@@ -15,7 +15,7 @@ setup(
     long_description_content_type="text/markdown",
     long_description=long_description,
     packages=['Neutron'],
-    install_requires=['pywebview', 'bs4', 'keyboard'],
+    install_requires=['pywebview', 'bs4', 'keyboard', 'lxml'],
     keywords=['python', 'HTML', 'CSS', 'GUI', 'desktop apps'],
     classifiers=[
         "Development Status :: 4 - Beta",
