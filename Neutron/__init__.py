@@ -12,6 +12,7 @@ if not sys.platform.startswith('linux'):
     import keyboard
 
 from . import elements
+from . import ihpy
 from . import utils
 
 
@@ -105,7 +106,7 @@ class Window:
         locals = frame.f_back.f_locals
 
         if file:
-            # Convert file content to f-string, used for Neutron.event()
+
 
             # Check if program is being run as an exe
             if getattr(sys, 'frozen', False):
@@ -113,22 +114,18 @@ class Window:
             else:
                 content = str(open(file, "r").read())
 
-            strippedHTML = content.replace("\n", "")
-            try:
-                soupSrc = eval(f"fr'''{strippedHTML}'''", locals)
-            except Exception as e:
-                raise WindowException("Error while parsing python code in HTML. Error: " + str(e))
+                soup_src = content
 
         elif html:
-            soupSrc = html
+            soup_src = html
         
-        soup = BeautifulSoup(soupSrc, features="lxml")
+        soup = BeautifulSoup(soup_src, features="lxml")
         bodyContent = soup.body.find_all()
 
         for element in bodyContent:
             elements.createNeutronId(element)
 
-        self.webview.html = str(soup)
+        self.webview.html = ihpy.compile(str(soup), locals) # Compile using ihpy, see ihpy.py
 
     def setHtml(self, html):
         self.webview.html = str(html)
