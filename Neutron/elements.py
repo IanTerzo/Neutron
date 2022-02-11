@@ -14,7 +14,7 @@ This is beacuse every NeutronID is an unique UUID.
 """
 
 def createNeutronId(tag):
-    NeutronID = f"NeutronID[{uuid.uuid4()}]"
+    NeutronID = f"NeutronID_{uuid.uuid4()}"
 
     element_classes = tag.get('class')
     if element_classes is not None:
@@ -437,7 +437,7 @@ class HTMlelement:
     # Does not work with global event handlers!!
     def getAttributes(self):
         if self.window.running:
-            return self.window.webview.get_elements(f'#{self.id}')[0]
+            return self.window.webview.get_elements(f'.{self.NeutronID}')[0]
         else:
             return self.elementHTML.attrs
 
