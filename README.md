@@ -72,7 +72,7 @@ win.display(f"""
       <input id="inputName">
       <button id="submitName" onclick="{Neutron.event(setName)}">Submit</button>
       <!-- OR-->
-      {Neutron.Button(win, content="Submit", onclick=Neutron.event(setName))}
+      {Neutron.elements.Button(win, content="Submit", onclick=Neutron.event(setName))}
    </body>
 </html>
 """)
@@ -106,7 +106,7 @@ win.display(f"""
       <input id="inputName">
       <button id="submitName" onclick="{Neutron.event(setName)}">Submit</button>
       <!-- OR-->
-      {Neutron.Button(win, content="Submit", onclick=Neutron.event(setName))}
+      {Neutron.elements.Button(win, content="Submit", onclick=Neutron.event(setName))}
    </body>
 </html>
 """)
