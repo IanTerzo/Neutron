@@ -9,7 +9,7 @@ You can get started contributing via [CONTRIBUTING.md](https://github.com/IanTer
 pip install neutron-web
 ```
 
-## Building to EXE/APP/ELF
+## Building to EXE/APP/AN EXECUTABLE
 
 > **Note:** This has only been tested on windows.
 
