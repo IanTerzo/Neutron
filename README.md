@@ -8,10 +8,6 @@ You can get started contributing via [CONTRIBUTING.md](https://github.com/IanTer
 ```
 pip install neutron-web
 ```
-> **Note:** use `import Neutron`
-
-
-> `import neutron-web` <-- WRONG
 
 ## Building to EXE/APP/ELF
 
