@@ -381,10 +381,10 @@ def Summary(window, content="", id=None, **args):
 
 
 # Web componets #
-# soon
 
 
-# Does not contain with global event handlers
+
+# Does not contain global event handlers
 HTMLelementAttributes = ['value', 'accept', 'action', 'align', 'allow', 'alt', 'autocapitalize', 'autocomplete',
                          'autofocus', 'autoplay', 'background', 'bgcolor', 'border', 'buffered', 'capture', 'challenge',
                          'charset', 'checked', 'cite', 'className', 'code', 'codebase', 'color', 'cols', 'colspan',
