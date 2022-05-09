@@ -11,7 +11,7 @@ pip install neutron-web
 
 ## Building to EXE/APP/AN EXECUTABLE
 
-> **Note:** This has only been tested on windows.
+> **Note:** If you are on linux use ":" instead of ";" in the build command
 
 To build a Neutron project you first need pyinstaller, install pyinstaller throught pip: `pip install pyinstaller`. Then run the script below in your command prompt/terminal.
 
