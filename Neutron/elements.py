@@ -21,7 +21,7 @@ def createNeutronId(tag):
         tag['class'] = NeutronID + " " + " ".join(element_classes)
     else:
          tag['class'] = NeutronID
-                    
+
     return NeutronID
 
 def __CreateElement(window, tag, content, id, args):
@@ -32,7 +32,7 @@ def __CreateElement(window, tag, content, id, args):
     else:
         elem = soup.new_tag(tag, attrs=args)
 
-    if type(content) == HTMlelement:
+    if type(content) == HTMLelement:
         soup = BeautifulSoup(str(soup).replace(str(content), "", 1), features="lxml")
         contentParsed = BeautifulSoup(str(content), 'html.parser')
         elem.append(contentParsed)
@@ -46,7 +46,7 @@ def __CreateElement(window, tag, content, id, args):
     # Remove old element
 
     window.setHtml(soup)
-    return HTMlelement(window, NeutronID, elem)
+    return HTMLelement(window, NeutronID, elem)
 
 
 # For HTML elements ment for containing other elements i.e div
@@ -68,12 +68,12 @@ def __CreateContainer(window, tag, children, id, args):
         # Make children into tags
         childParsed = BeautifulSoup(str(child), 'html.parser')
         elem.append(childParsed)
-    
+
     NeutronID = createNeutronId(elem)
 
     soup.body.append(elem)
     window.setHtml(soup)
-    return HTMlelement(window, NeutronID, elem)
+    return HTMLelement(window, NeutronID, elem)
 
 
 # Content sectioning #
@@ -402,7 +402,7 @@ HTMLelementAttributes = ['value', 'accept', 'action', 'align', 'allow', 'alt', '
                          'summary', 'tabindex', 'target', 'title', 'translate', 'type', 'usemap', 'width', 'wrap']
 
 
-class HTMlelement:
+class HTMLelement:
     def __init__(self, window, NeutronID, elementHTML=None):
         self.window = window
         self.elementHTML = elementHTML
