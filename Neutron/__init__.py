@@ -13,7 +13,6 @@ if not sys.platform.startswith('linux'):
 
 from . import elements
 from . import ihpy
-from . import utils
 
 
 # Start HTTP server in the background
