@@ -118,7 +118,7 @@ class Window:
 
         elif html:
             soup_src = html
-        
+
         soup = BeautifulSoup(soup_src, features="lxml")
         bodyContent = soup.body.find_all()
 
@@ -201,7 +201,7 @@ class Window:
             elementNeutronID = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}").className;"""))
 
             if elementNeutronID != "null":
-                return elements.HTMlelement(self, elementNeutronID)
+                return elements.HTMLelement(self, elementNeutronID)
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
@@ -212,7 +212,7 @@ class Window:
             element = soup.select(f'#{id}')
             if element != []:
                 NeutronID = element[0].get('class')[0]
-                return elements.HTMlelement(self, NeutronID)
+                return elements.HTMLelement(self, NeutronID)
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
@@ -221,6 +221,6 @@ class Window:
         if self.running:
 
             ElementsNeutronID = self.webview.evaluate_js("var elementsNeutronID = []; Array.from(document.getElementsByTagName('" + name + "')).forEach(function(item) { elementsNeutronID.push(item.className) }); '' + elementsNeutronID;")
-            return [elements.HTMlelement(self, NeutronID) for NeutronID in ElementsNeutronID.split(",")]
+            return [elements.HTMLelement(self, NeutronID) for NeutronID in ElementsNeutronID.split(",")]
         else:
             pass
