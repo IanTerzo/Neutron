@@ -75,7 +75,7 @@ win.display(f"""
 win.show()
 ```
 
-To resolve the loading time issue, Neutron features a loader system seen here:
+To resolve slow loading times for bigger projects, Neutron features a loader system seen here:
 ```py
 import Neutron
 
