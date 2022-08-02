@@ -125,13 +125,15 @@ class Window:
         elif html:
             soup_src = html
 
+        soup_src = ihpy.compile(str(soup_src), locals)
+
         soup = BeautifulSoup(soup_src, features="lxml")
         bodyContent = soup.body.find_all()
 
         for element in bodyContent:
             elements.createNeutronId(element)
 
-        self.webview.html = ihpy.compile(str(soup), locals) # Compile using ihpy, see ihpy.py
+        self.webview.html = str(soup) # Compile using ihpy, see ihpy.py
 
         if pyfunctions:
             for function in pyfunctions:
@@ -159,8 +161,7 @@ class Window:
             base = soup.new_tag('base')
             base['href'] = "http://localhost:5600/"
             soup.body.append(base)
-
-            print(bridgejs)
+            
             # Python-JavaScript bridge #
             bridge = soup.new_tag('script')
             if self.after_load:
