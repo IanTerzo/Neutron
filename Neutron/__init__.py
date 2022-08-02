@@ -214,7 +214,8 @@ class Window:
     def getElementById(self, id):
         if self.running:
             elementNeutronID = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}").className;"""))
-
+            
+            elementNeutronID = elementNeutronID.split(' ')[0]
             if elementNeutronID != "null":
                 return elements.HTMLelement(self, elementNeutronID)
             else:
@@ -236,6 +237,6 @@ class Window:
         if self.running:
 
             ElementsNeutronID = self.webview.evaluate_js("var elementsNeutronID = []; Array.from(document.getElementsByTagName('" + name + "')).forEach(function(item) { elementsNeutronID.push(item.className) }); '' + elementsNeutronID;")
-            return [elements.HTMLelement(self, NeutronID) for NeutronID in ElementsNeutronID.split(",")]
+            return [elements.HTMLelement(self, NeutronID.split(' ')[0]) for NeutronID in ElementsNeutronID.split(",")]
         else:
             pass
