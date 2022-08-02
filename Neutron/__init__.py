@@ -43,10 +43,14 @@ class Api:
     def __init__(self):
         pass
 
-    def bridge(self, func):
+    def bridge(self, func, calldata=None):
         if api_functions[func]:
-            api_functions[func]()
+            if calldata:
+                api_functions[func](calldata)
+            else: 
+                api_functions[func]()
 
+"""NOTE! It is not reccomended to use to use the event function or HTMLelement.addEventListener() when linking python code, see the updated example on Github"""
 
 def event(function):
     if callable(function):
@@ -56,6 +60,8 @@ def event(function):
     else:
         raise EventException("Event attribute is not a function!")
 
+global bridgejs
+bridgejs = "function bridge(func) {pywebview.api.bridge(func)};"
 
 # EXCEPTIONS #
 
@@ -100,12 +106,13 @@ class Window:
         if after:
             self.after_load = event(after)
 
-    def display(self, html=None, file=None):
+    def display(self, html=None, file=None, pyfunctions=None):
+        global bridgejs
+
         frame = inspect.currentframe()
         locals = frame.f_back.f_locals
 
         if file:
-
 
             # Check if program is being run as an exe
             if getattr(sys, 'frozen', False):
@@ -126,6 +133,12 @@ class Window:
 
         self.webview.html = ihpy.compile(str(soup), locals) # Compile using ihpy, see ihpy.py
 
+        if pyfunctions:
+            for function in pyfunctions:
+                api_functions.update({str(function): function})
+                bridgejs = bridgejs + "function " + function.__name__ +  "(calldata=null){pywebview.api.bridge('" + str(function) + "', calldata)}; "
+
+                
     def setHtml(self, html):
         self.webview.html = str(html)
 
@@ -133,6 +146,7 @@ class Window:
         self.webview.hide()
 
     def show(self, after=None):
+        self.covertime = 3000
         self.showafter = after
 
         if self.running != True:
@@ -146,13 +160,14 @@ class Window:
             base['href'] = "http://localhost:5600/"
             soup.body.append(base)
 
+            print(bridgejs)
             # Python-JavaScript bridge #
             bridge = soup.new_tag('script')
             if self.after_load:
-                bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none';" + self.after_load + "}," + str(
-                    self.covertime) + ")"
+                bridge.string = bridgejs + " setTimeout(function() {document.getElementById('cover').style.display = 'none';" + self.after_load + "}," + str(
+                    self.covertime) + ")" 
             else:
-                bridge.string = "function bridge(func) {pywebview.api.bridge(func)} setTimeout(function() {document.getElementById('cover').style.display = 'none'}," + str(
+                bridge.string = bridgejs + " setTimeout(function() {document.getElementById('cover').style.display = 'none'}," + str(
                     self.covertime) + ")"
             soup.body.append(bridge)
 
