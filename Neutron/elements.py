@@ -433,7 +433,10 @@ class HTMLelement:
 
     def append(self, html):
         self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{html}';""")
-
+        
+    def remove(self):
+        self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].remove();""")
+        
     # Does not work with global event handlers!!
     def getAttributes(self):
         if self.window.running:
