@@ -227,7 +227,7 @@ class Window:
                        NeutronID = classname 
 
             if NeutronID != "null":
-                return elements.HTMLelement(self, elementNeutronID)
+                return elements.HTMLelement(self, NeutronID)
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
