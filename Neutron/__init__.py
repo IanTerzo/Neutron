@@ -215,8 +215,18 @@ class Window:
         if self.running:
             elementNeutronID = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}").className;"""))
             
-            elementNeutronID = elementNeutronID.split(' ')[0]
-            if elementNeutronID != "null":
+            NeutronID = elementNeutronID.split(' ')[0]
+
+            #Make sure that it is the actual Neutron id
+
+            if "NeutronID_" in  NeutronID:
+                pass
+            else:
+                for classname in elementNeutronID.split(' '):
+                    if "NeutronID_" in classname:
+                       NeutronID = classname 
+
+            if NeutronID != "null":
                 return elements.HTMLelement(self, elementNeutronID)
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
