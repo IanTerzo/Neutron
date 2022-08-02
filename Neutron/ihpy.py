@@ -19,7 +19,6 @@ def compile(html, locals):
         user_code = html[html.find("{python") + len("{python"):html.find("}")]
 
         runner_src = "def runner():\n" + user_code # To prevent any IndentationErrors and make the return statement work
-        print(user_code)
 
         exec(runner_src, locals) # Define function
         result = eval("runner()", locals)
