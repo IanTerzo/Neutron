@@ -428,12 +428,24 @@ class HTMLelement:
                 f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].addEventListener("{eventHandler}", {NeutronEvent});""");
 
     def appendChild(self, html):
-        self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{html}';""")
+        soup = BeautifulSoup(html, features="lxml")
+        bodyContent = soup.body.find_all()
+
+        for element in bodyContent:
+            createNeutronId(element)
+
+        self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{str(soup)}';""")
         return html
 
     def append(self, html):
-        self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{html}';""")
-        
+        soup = BeautifulSoup(html, features="lxml")
+        bodyContent = soup.body.find_all()
+
+        for element in bodyContent:
+            createNeutronId(element)
+
+        self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{str(soup)}';""")
+
     def remove(self):
         self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].remove();""")
         
