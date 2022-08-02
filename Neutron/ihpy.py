@@ -7,7 +7,7 @@ Example usage:
 {python
          # The return statement works as in a function except that the return(s) get added to the HTML, works with strings, lists, and tuples.
          
-         return "This will be displayed in the HTML", Neutron2.elements.H2(win, content="This too")
+         return "This will be displayed in the HTML", Neutron.elements.H2(win, content="This too")
 
 }
 
