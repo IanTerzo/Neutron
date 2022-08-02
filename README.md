@@ -21,6 +21,8 @@ pyinstaller YOUR_PYTHON_FILE.py --noconsole --onefile --add-data="YOUR_HTML_FILE
 
 ## Examples
 
+### Full example
+
 For a fully set up example project see [TEMPLATE](https://github.com/IanTerzo/Neutron/tree/main/TEMPLATE). The project is build how it's intended, meaning it has a CSS and HTML file for the design and a Python file for the logic. (It is comparable to how websites using JavaScript are built).
 
 ### Other examples
@@ -66,12 +68,10 @@ win.display(f"""
    <body>
       <h1 id="title">Hello: </h1>
       <input id="inputName">
-      <button id="submitName" onclick="{Neutron.event(setName)}">Submit</button>
-      <!-- OR-->
-      {Neutron.elements.Button(win, content="Submit", onclick=Neutron.event(setName))}
+      <button id="submitName" onclick="setName()">Submit</button>
    </body>
 </html>
-""")
+""", pyfunctions=[setName]) # Link up any python functions so that they can be used inside the HTML
 win.show()
 ```
 
@@ -84,27 +84,4 @@ win = Neutron.Window("Example", size=(600,100))
 # The loader covers while all the other elements and css loads
 win.loader(content="<h1>Loading App...</h1>", color="#fff", after=lambda: win.toggle_fullscreen())
 
-
-def setName():
-    name = win.getElementById("inputName").value
-    win.getElementById("title").innerHTML = "Hello: " + name
-
-
-win.display(f"""
-
-<!DOCTYPE html>
-<html>
-   <head lang="en">
-      <meta charset="UTF-8">
-   </head>
-   <body>
-      <h1 id="title">Hello: </h1>
-      <input id="inputName">
-      <button id="submitName" onclick="{Neutron.event(setName)}">Submit</button>
-      <!-- OR-->
-      {Neutron.elements.Button(win, content="Submit", onclick=Neutron.event(setName))}
-   </body>
-</html>
-""")
-win.show()
 ```
