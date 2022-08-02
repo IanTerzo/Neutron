@@ -71,7 +71,7 @@ win.display(f"""
       <button id="submitName" onclick="setName()">Submit</button>
    </body>
 </html>
-""", pyfunctions=[setName]) # Link up any python functions so that they can be used inside the HTML
+""", pyfunctions=[setName]) # Link up any Python functions so that they can be used inside the HTML
 win.show()
 ```
 
