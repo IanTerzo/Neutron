@@ -12,16 +12,6 @@
 (In `elements.py`)
 
 ### OTHER
-- [ ] A way to get what HTMLelement is calling the Neutron.event()
-
-example:
-```
-<button id="task1" onclick="{Neutron.event(onClick)}">Submit</button>
-<button id="task2" onclick="{Neutron.event(onClick)}">Submit</button>
-
-def onClick(caller):
-    print(caller.id) #task1, task2, depending on wich is clicked
-```
 
 - [ ] Finish the HTMLelement class
 
@@ -37,4 +27,5 @@ def onClick(caller):
 ### COMPLETED TO-DOS
 - [x] JavaScript-Python bridge
 - [x] Finish all HTML elements
+- [x] A way to get what HTMLelement is calling the Event
 
