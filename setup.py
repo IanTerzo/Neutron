@@ -8,7 +8,7 @@ with codecs.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "READM
 # Setting up
 setup(
     name="neutron-web",
-    version='0.1.6',
+    version='0.2.1',
     author="IanTerzo (Ian Baldelli)",
     author_email="ian.baldelli@gmail.com",
     description="Create modern cross-platform apps in Python using HTML and CSS",
