@@ -14,7 +14,7 @@ This is beacuse every NeutronID is an unique UUID.
 """
 
 def createNeutronId(tag):
-    NeutronID = f"NeutronID_{uuid.uuid4()}"
+    NeutronID = f"NeutronID_{uuid.uuid1()}"
 
     element_classes = tag.get('class')
     if element_classes is not None:
