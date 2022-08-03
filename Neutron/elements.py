@@ -407,6 +407,17 @@ class HTMLelement:
         self.window = window
         self.elementHTML = elementHTML
         self.NeutronID = NeutronID
+        if "NeutronID_" not in self.NeutronID:
+            logging.warning("Currupt NeutronID, please report this issue and what lines of code caused it.")
+            if id:
+                classes_from_id = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}").className;"""))
+
+                if "NeutronID_" in classes_from_id.split(' ')[0]:
+                    self.NeutronID = classes_from_id.split(' ')[0]
+                else:
+                    for classname in classes_from_id.split(' '):
+                        if "NeutronID_" in classname:
+                            self.NeutronID = classname
 
     def __str__(self):
         # elementHTML will be set to None if class is called on runtime
