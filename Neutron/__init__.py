@@ -120,7 +120,7 @@ class Window:
             else:
                 content = str(open(file, "r").read())
 
-                soup_src = content
+            soup_src = content
 
         elif html:
             soup_src = html
