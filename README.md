@@ -11,13 +11,14 @@ pip install neutron-web
 
 ## Building your project
 
-> **Note:** If you are on linux use ":" instead of ";" in the build command
+To build a Neutron project you first need pyinstaller, install pyinstaller throught pip: `pip install pyinstaller`. Then run the script below in your command prompt/terminal. You can also use other programs to build your project such as py2exe if you prefer.
 
-To build a Neutron project you first need pyinstaller, install pyinstaller throught pip: `pip install pyinstaller`. Then run the script below in your command prompt/terminal.
-
+> **Note:** If you are on linux use ":" instead of ";"
 ```
 pyinstaller YOUR_PYTHON_FILE.py --noconsole --onefile --add-data="YOUR_HTML_FILE.html;." --add-data="YOUR_CSS_FILE.css;."
 ```
+
+You don't need to use `--add-data` if your project doesn't have a CSS or HTML file
 
 ## Examples
 
