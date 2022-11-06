@@ -471,6 +471,11 @@ class HTMLelement:
     def setAttribute(self, attribute, value):
         self.window.webview.evaluate_js(
             f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].setAttribute("{attribute}", "{value}");""")
+        
+    def removeAttribute(self, attribute):
+        self.window.webview.evaluate_js(
+            f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].removeAttribute("{attribute}");"""
+        )
 
     def innerHTML_get(self):
         return str(self.window.webview.evaluate_js(f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].innerHTML;"""))
