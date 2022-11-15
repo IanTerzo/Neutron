@@ -32,7 +32,7 @@ Althought not recommended for big projects, it's possible to create an app using
 ```py
 import Neutron
 
-win = Neutron.Window("Example", css="def.css")
+win = Neutron.Window("Example")
 
 HeaderObject = Neutron.elements.Header(win, id="title", content="Hello")
 
