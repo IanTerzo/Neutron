@@ -17,7 +17,7 @@ from . import ihpy
 
 # Start HTTP server in the background
 def start_server():
-    from . import HTTP_sever
+    from . import HTTP_server
 
 
 server = Thread(target=start_server, daemon=True).start()
