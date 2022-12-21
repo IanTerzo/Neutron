@@ -89,7 +89,7 @@ win.loader(content="<h1>Loading App...</h1>", color="#fff", after=lambda: win.to
 ```
 ### Multiple windows
 
-To create another window for example when a fuction is called you need to use the `childwindow` property. 
+To create another window for example when a fuction is called you need to use the `childwindow` argument. 
 ```
 def createNewWindow():
     win = Neutrontest.Window("Example", size=(600, 100), childwindow=True)
