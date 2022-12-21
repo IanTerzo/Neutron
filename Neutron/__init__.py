@@ -74,10 +74,10 @@ class WindowException(Exception):
 
 
 class Window:
-    def __init__(self, title, css=None, min_size=(300, 300), size=(900, 600), fullscreen=False):
+    def __init__(self, title, css=None, min_size=(300, 300), size=(900, 600), fullscreen=False, frameless=False):
         api = Api()
         self.webview = webview.create_window(title, html=html, js_api=api, min_size=min_size, width=size[0],
-                                             height=size[1], fullscreen=fullscreen)
+                                             height=size[1], fullscreen=fullscreen, frameless=frameless)
         self.css = css
         self.running = False
 
