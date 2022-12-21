@@ -75,6 +75,7 @@ win.display(f"""
 """, pyfunctions=[setName]) # Link up any Python functions so that they can be used inside the HTML
 win.show()
 ```
+### Loader 
 
 To resolve slow loading times for bigger projects, Neutron features a loader system seen here:
 ```py
@@ -85,4 +86,13 @@ win = Neutron.Window("Example", size=(600,100))
 # The loader covers while all the other elements and css loads
 win.loader(content="<h1>Loading App...</h1>", color="#fff", after=lambda: win.toggle_fullscreen())
 
+```
+### Multiple windows
+
+To create another window for example when a fuction is called you need to use the `childwindow` property. 
+```
+def createNewWindow():
+    win = Neutrontest.Window("Example", size=(600, 100), childwindow=True)
+    win.display(file="secondwindow.html")
+    win.show()
 ```
