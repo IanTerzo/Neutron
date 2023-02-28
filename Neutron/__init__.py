@@ -198,7 +198,7 @@ class Window:
             if self.childwindow:
                 self.webview.evaluate_js(f"""document.open();document.write(`{str(soup)}`);document.close();""")
             else:
-                webview.start(self.load_handler, self.webview)
+                webview.start(self.load_handler, self.webview, private_mode=False, storage_path=None)
         else:
             self.webview.show()
 
