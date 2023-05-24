@@ -74,9 +74,9 @@ class WindowException(Exception):
 
 
 class Window:
-    def __init__(self, title, css=None, min_size=(300, 300), size=(900, 600), childwindow=False, **kwargs):
+    def __init__(self, title, css=None, min_size=(300, 300), size=(900, 600), childwindow=False, resizable=True, **kwargs):
         api = Api()
-        self.webview = webview.create_window(title, html=html, js_api=api, min_size=min_size, width=size[0],
+        self.webview = webview.create_window(title, html=html, js_api=api, min_size=min_size, resizable=resizable, width=size[0],
                                              height=size[1], **kwargs)
         self.css = css
         self.running = False
