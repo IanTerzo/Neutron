@@ -107,7 +107,7 @@ class Window:
         if after:
             self.after_load = event(after)
 
-    def display(self, html=None, file=None, pyfunctions=None):
+    def display(self, html=None, file=None, pyfunctions=None, encoding="utf-8"):
         global bridgejs
 
         frame = inspect.currentframe()
@@ -117,9 +117,9 @@ class Window:
 
             # Check if program is being run as an exe
             if getattr(sys, 'frozen', False):
-                content = str(open(os.path.join(sys._MEIPASS, file), "r").read())
+                content = str(open(os.path.join(sys._MEIPASS, file), "r", encoding=encoding).read())
             else:
-                content = str(open(file, "r").read())
+                content = str(open(file, "r", encoding=encoding).read())
 
             soup_src = content
 
