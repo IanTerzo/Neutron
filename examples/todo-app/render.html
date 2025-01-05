@@ -1,11 +1,30 @@
-<!doctype html>
-<html>
-    <head lang="en">
-        <meta charset="UTF-8" />
-    </head>
-    <body>
-        <h1 id="title">Hello:</h1>
-        <input id="inputName" />
-        <button id="submitName">Submit</button>
-    </body>
-</html>
+<div id="container">
+    <h1>To-Do List <i class="fa fa-plus"></i></h1>
+    <input
+        id="addTask"
+        type="text"
+        placeholder="Add New Todo"
+        onkeydown="CreateTask(event.key)"
+    />
+
+    <ul id="tasks">
+        <li id="task0">
+            <span onclick="RemoveTask(this.parentNode.id)"
+                ><i class="fa fa-trash">X</i></span
+            >
+            Learn HTML
+        </li>
+        <li id="task1">
+            <span onclick="RemoveTask(this.parentNode.id)"
+                ><i class="fa fa-trash">X</i></span
+            >
+            Learn Python
+        </li>
+        <li id="task2">
+            <span onclick="RemoveTask(this.parentNode.id)"
+                ><i class="fa fa-trash">X</i></span
+            >
+            Make a Neutron project
+        </li>
+    </ul>
+</div>
