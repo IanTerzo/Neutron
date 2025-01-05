@@ -12,6 +12,11 @@
 (In `elements.py`, for example HTMLelement.style attribute)
 
 
+### Other
+
+- [ ] Improve the HTMLelement attribute system to avoid looping trough all HTMLelementAttributes at creation
+
+(In `elements.py`)
 
 ### COMPLETED TO-DOS
 - [x] JavaScript-Python bridge
