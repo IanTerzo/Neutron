@@ -1,56 +1,112 @@
-import webview
+
+from PyQt6.QtCore import QUrl
+from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
+from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtCore import QThread
 from bs4 import BeautifulSoup
-
-from threading import Thread
-import inspect
-import logging
-
+import json
+from . import elements
 import sys
 import os
-
-if not sys.platform.startswith('linux'):
-    import keyboard
-
-from . import elements
-from . import ihpy
-
-
-# Start HTTP server in the background
-def start_server():
-    from . import HTTP_server
-
-
-server = Thread(target=start_server, daemon=True).start()
-
-html = """
-<!DOCTYPE html>
-<html>
-<head lang="en">
-<meta charset="UTF-8">
-</head>
-<body>
-</body>
-</html>
-"""
+import logging
+import asyncio
+import threading
+import websockets
+from websockets.exceptions import ConnectionClosedOK
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 global api_functions
 api_functions = {}
 
-
-# PYTHON - JAVASCRIPT BRIDGE #
-
-class Api:
-    def __init__(self):
+class ListenerHTTPServer(SimpleHTTPRequestHandler):
+    def log_message(self, format, *args):
+        # Disable log messages
         pass
 
-    def bridge(self, func, calldata=None):
-        if api_functions[func]:
-            if calldata:
-                api_functions[func](calldata)
-            else: 
-                api_functions[func]()
+    def _set_headers(self):
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
 
-"""NOTE! It is not reccomended to use to use the event function or HTMLelement.addEventListener() when linking python code, see the updated example on Github"""
+    def do_GET(self):
+        super().do_GET()
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self._set_headers()
+        self.end_headers()
+
+    def do_POST(self):
+        content_length = int(self.headers['Content-Length'])
+        post_data = self.rfile.read(content_length)
+        post_data = post_data.decode('utf-8')
+        data = json.loads(post_data)
+
+        if data["type"] == "bridge":
+            api_functions[data['function']](*data['parameters'])
+            self.send_response(200)
+            self._set_headers()
+            self.end_headers()
+        else:
+            self.send_response(500)
+            self._set_headers()
+            self.end_headers()
+
+
+def start_listener_server():
+    httpd = HTTPServer(('', 8764), ListenerHTTPServer)
+    httpd.serve_forever()
+
+class WebSocketSendServer(QThread):
+    client = None
+
+    def __init__(self, host="localhost", port=8765):
+        super().__init__()
+        self.host = host
+        self.port = port
+        self.pending_response = None
+
+    async def handler(self, websocket):
+        self.client = websocket
+        try:
+            while True:
+                try:
+                    message = await websocket.recv()
+                    if self.pending_response:
+                        self.pending_response.set_result(message)
+
+                except ConnectionClosedOK:
+                    print(f"Client {websocket} disconnected gracefully.")
+                    break
+                except websockets.exceptions.ConnectionClosed as e:
+                    print(f"Connection closed unexpectedly: {e}")
+                    break
+        finally:
+            self.client = None
+
+    async def start_server(self):
+        async with websockets.serve(self.handler, self.host, self.port):  # Optional max size for messages
+            await asyncio.Future()  # Run forever
+
+    async def send_and_wait(self, message: str) -> str:
+        if not self.client:
+            raise RuntimeError("No client connected")
+
+        # Create a future to await the response
+        self.pending_response = asyncio.get_event_loop().create_future()
+
+        await self.client.send(message)
+
+        # Wait for the future to be done
+        while True:
+            if self.pending_response.done():
+                result = self.pending_response.result()
+                self.pending_response = None
+                return result
+
+
+    def run(self):
+        asyncio.run(self.start_server())
 
 def event(function):
     if callable(function):
@@ -58,199 +114,227 @@ def event(function):
             api_functions.update({str(function): function})
         return f"bridge('{str(function)}')"
     else:
-        raise EventException("Event attribute is not a function!")
-
-global bridgejs
-bridgejs = "function bridge(func) {pywebview.api.bridge(func)};"
-
-# EXCEPTIONS #
-
-class EventException(Exception):
-    pass
-
-
-class WindowException(Exception):
-    pass
-
+        raise TypeError("Event attribute is not a function!")
 
 class Window:
-    def __init__(self, title, css=None, min_size=(300, 300), size=(900, 600), childwindow=False, resizable=True, **kwargs):
-        api = Api()
-        self.webview = webview.create_window(title, html=html, js_api=api, min_size=min_size, resizable=resizable, width=size[0],
-                                             height=size[1], **kwargs)
+    def __init__(self, title, css=None, position=(300, 300), size=(900, 600)):
+        self.title = title
         self.css = css
+        self.position = position
+        self.size = size
         self.running = False
-        self.childwindow = childwindow
-        
-        # Cover attributes
-        self.usecover = False
-        self.covertime = 3000
-        self.covercolor = '#fff'
-        self.covercontent = "<h1>Loading...</h1>"
-        self.after_load = None
 
-        self.resize = self.webview.resize
-        self.toggle_fullscreen = self.webview.toggle_fullscreen
+        self.view = None
+        self.qt_window = None;
+        self.html = ""
+        self.loop = asyncio.new_event_loop()
 
-    def load_handler(self, win):
-        if self.showafter:
-            self.showafter()
 
-    def loader(self, content="<h1 style='None'>Loading...</h1>", color='#fff', duration=3000, after=None):
-        self.usecover = True
-        self.webview.background_color = color
-        self.covercolor = color
-        self.covertime = duration
+    def run_javascript(self, javascript):
+        if not self.running:
+             raise RuntimeError(""""Window.run_javascript()" can only be called while the window is running!""")
 
-        self.covercontent = content
+        message = json.dumps({"type": "eval", "javascript": javascript})
+        response = ""
+        async def send_and_wait():
+            nonlocal response
+            try:
+                response = await self.websocket_server.send_and_wait(message)
+            except TimeoutError:
+                raise TimeoutError("No response received within the timeout period.")
 
-        if after:
-            self.after_load = event(after)
+        asyncio.run(send_and_wait())
+        return response
 
-    def display(self, html=None, file=None, pyfunctions=None, encoding="utf-8"):
-        global bridgejs
-
-        frame = inspect.currentframe()
-        locals = frame.f_back.f_locals
+    def display(self, file=None, html=None, pyfunctions=None, encoding="utf-8"):
 
         if file:
-
             # Check if program is being run as an exe
             if getattr(sys, 'frozen', False):
                 content = str(open(os.path.join(sys._MEIPASS, file), "r", encoding=encoding).read())
             else:
                 content = str(open(file, "r", encoding=encoding).read())
-
-            soup_src = content
-
         elif html:
-            soup_src = html
+            content = str(html) # Make sure it is a string (could be beutifulsoup element)
 
-        soup_src = ihpy.compile(str(soup_src), locals)
+        soup = BeautifulSoup(content, "html.parser")
 
-        soup = BeautifulSoup(soup_src, features="lxml")
-        bodyContent = soup.body.find_all()
+        bridge_html = """
+        <script>
+        const commandSocket = new WebSocket("ws://localhost:8765");
 
-        for element in bodyContent:
-            elements.createNeutronId(element)
-            
-        self.webview.html = str(soup) # Compile using ihpy, see ihpy.py
+        commandSocket.onopen = function() {
+            console.log("WebSocket connection opened");
+            commandSocket.send("connect");
+        };
 
+        commandSocket.onmessage = function(event) {
+            data = JSON.parse(event.data);
+            if (data.type == "eval") {
+                result = eval(data.javascript);
+                commandSocket.send(result);
+            }
+        };
+
+        commandSocket.onclose = function() {
+            console.log("WebSocket connection closed");
+        };
+
+        commandSocket.onerror = function(error) {
+            console.log("WebSocket error: " + error.message);
+        };
+
+        function bridge(func, ...params) {
+            const url = 'http://localhost:8764';
+            const data = {
+                type: 'bridge',
+                function: func,
+                parameters: params
+            };
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        };
+        """
+
+        # add registered python function
         if pyfunctions:
             for function in pyfunctions:
                 api_functions.update({str(function): function})
-                bridgejs = bridgejs + "function " + function.__name__ +  "(calldata=null){pywebview.api.bridge('" + str(function) + "', calldata)}; "
+                bridge_html += "function " + function.__name__ +  "(...params){bridge('" + str(function) + "',...params)}; "
 
-                
-    def setHtml(self, html):
-        self.webview.html = str(html)
+        bridge_html += "</script>"
 
-    def hide(self):
-        self.webview.hide()
+        # add stylesheet if needed
+        if self.css:
+            bridge_html += f'<link rel="stylesheet" href="http://localhost:8764/{self.css}">'
+
+
+        # Append the new HTML to the <head> section
+
+        if not soup.head:
+            head = soup.new_tag('head')
+            soup.insert(0, head)
+
+        soup.head.append(BeautifulSoup(bridge_html, 'html.parser'))
+
+        soupContent = soup.find_all()
+
+        for element in soupContent:
+            elements.createNeutronId(element)
+
+        # Link all filereads to the http server
+        base = soup.new_tag('base')
+        base['href'] = "http://localhost:8764/"
+
+        self.html = str(soup)
+
 
     def show(self, after=None):
-        self.covertime = 3000
-        self.showafter = after
+        title = self.title
+        size = self.size
 
-        if self.running != True:
-            if not sys.platform.startswith('linux'):
-                keyboard.block_key("f5")
+        # Start bridge server
+        server_thread = threading.Thread(target=start_listener_server)
+        server_thread.daemon = True  # Ensures the thread will exit when the main program exits
+        server_thread.start()
 
-            soup = BeautifulSoup(self.webview.html, features="lxml")
+        # Start websocket server
+        self.websocket_server = WebSocketSendServer()
+        self.websocket_server.start()
 
-            # HTTPS server bridge for files
-            base = soup.new_tag('base')
-            base['href'] = "http://localhost:5600/"
-            soup.body.append(base)
-            
-            # Python-JavaScript bridge #
-            bridge = soup.new_tag('script')
-            if self.after_load:
-                bridge.string = bridgejs + " setTimeout(function() {document.getElementById('cover').style.display = 'none';" + self.after_load + "}," + str(
-                    self.covertime) + ")" 
-            else:
-                bridge.string = bridgejs + " setTimeout(function() {document.getElementById('cover').style.display = 'none'}," + str(
-                    self.covertime) + ")"
-            soup.body.append(bridge)
+        # Create window
+        app = QApplication([""])
 
-            # Loader #
-            cover = soup.new_tag('div', id="cover", attrs={
-                'style': 'position: fixed; height: 100%; width: 100%; top:0; left: 0; background: ' + self.covercolor + '; z-index:9999;'})
+        window = QMainWindow()
+        window.setWindowTitle(title)
+        window.setGeometry(100, 100, size[0], size[1])
 
-            if self.usecover == True:
-                coverContent = BeautifulSoup(str(self.covercontent), features="lxml")
-                cover.append(coverContent)
-                soup.body.append(cover)
+        central_widget = QWidget()
+        layout = QVBoxLayout(central_widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        window.setCentralWidget(central_widget)
 
-            # CSS stylesheet #
-            style = soup.new_tag('style')
+        view = QWebEngineView()
+        view.setHtml( self.html, QUrl("qrc:///"))
 
-            # Check if program is being run as an exe
-            if getattr(sys, 'frozen', False):
-                if self.css: style.string = open(os.path.join(sys._MEIPASS, self.css), "r").read()
-            else:
-                if self.css:
-                    style.string = open(self.css, "r").read()
-            soup.body.append(style)
+        layout.addWidget(view)
 
-            self.webview.html = str(soup)
-            self.running = True
-            if self.childwindow:
-                self.webview.evaluate_js(f"""document.open();document.write(`{str(soup)}`);document.close();""")
-            else:
-                webview.start(self.load_handler, self.webview, private_mode=False, storage_path=None)
-        else:
-            self.webview.show()
+        self.view = view
+        self.qt_window = window;
 
-    def appendChild(self, html):
+        self.running = True
+        self.qt_window.show()
+        sys.exit(app.exec())
+
+
+    def close(self):
+        self.qt_window.close()
+
+    def appendChild(self, html_element):
         if self.running:
-            self.webview.evaluate_js(f"""document.body.innerHTML += '{html}';""")
-            return html
+            self.run_javascript(f"""document.body.innerHTML += '{str(html_element)}';""")
+            html_element.domAttatched = True;
+            return html_element
         else:
-            raise WindowException(""""Window.append" can only be called while the window is running!""")
+            raise RuntimeError(""""Window.appendChild()" can only be called while the window is running!""")
 
     def append(self, html):
         if self.running:
-            self.webview.evaluate_js(f"""document.body.innerHTML += '{html}';""")
+            self.run_javascript(f"""document.body.innerHTML += '{str(html)}';""")
         else:
-            raise WindowException(""""Window.append" can only be called while the window is running!""")
+            raise RuntimeError(""""Window.append()" can only be called while the window is running!""")
 
     def getElementById(self, id):
         if self.running:
-            elementNeutronID = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}").className;"""))
-            
-            NeutronID = elementNeutronID.split(' ')[0]
+            elementNeutronID = str(self.run_javascript(f""" '' + document.getElementById("{id}").className;"""))
 
-            #Make sure that it is the actual Neutron id
+            NeutronID = None
 
-            if "NeutronID_" in  NeutronID:
-                pass
-            else:
-                for classname in elementNeutronID.split(' '):
-                    if "NeutronID_" in classname:
-                       NeutronID = classname 
+            for classname in elementNeutronID.split(' '):
+                if "NeutronID_" in classname:
+                    NeutronID = classname
+                    break
 
-            if NeutronID != "null":
-                return elements.HTMLelement(self, NeutronID)
+            if NeutronID:
+                return elements.HTMLelement(self, NeutronID, None, True)
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
-
         else:
-            soup = BeautifulSoup(self.webview.html, features="lxml")
+            soup = BeautifulSoup(self.html, "html.parser")
             # check if element exists
             element = soup.select(f'#{id}')
             if element != []:
                 NeutronID = element[0].get('class')[0]
-                return elements.HTMLelement(self, NeutronID)
+                return elements.HTMLelement(self, NeutronID, element, True)
             else:
                 logging.warning(f'HTMLelement with id "{id}" was not found!')
                 return None
 
     def getElementsByTagName(self, name):
         if self.running:
-
-            ElementsNeutronID = self.webview.evaluate_js("var elementsNeutronID = []; Array.from(document.getElementsByTagName('" + name + "')).forEach(function(item) { elementsNeutronID.push(item.className) }); '' + elementsNeutronID;")
-            return [elements.HTMLelement(self, NeutronID.split(' ')[0]) for NeutronID in ElementsNeutronID.split(",")]
+            ElementsNeutronID = self.run_javascript("var elementsNeutronID = []; Array.from(document.getElementsByTagName('" + name + "')).forEach(function(item) { elementsNeutronID.push(item.className) }); '' + elementsNeutronID;")
+            return [elements.HTMLelement(self, NeutronID.split(' ')[0], None, True) for NeutronID in ElementsNeutronID.split(",")]
         else:
-            pass
+            soup = BeautifulSoup(self.html, "html.parser")
+            return [elements.HTMLelement(self, element.get('class')[0], element, True) for element in soup.find_all(name)]
+
+    def createElement(self, tag):
+        soup = BeautifulSoup(self.html, features="html.parser")
+        elem = soup.new_tag(tag)
+
+        NeutronID = elements.createNeutronId(elem)
+
+        soup.append(elem)
+
+        return elements.HTMLelement(self, NeutronID, elem, False)

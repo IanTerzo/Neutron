@@ -3,13 +3,11 @@ import uuid
 
 """
 
-The HTMLelement class is located at the bottom of this file.
-
 Neutron passes HTML elements beetween JavaScript and Python using a custom ID system "NeutronID".
-The NeutronID is located in an elements classlist, and is generated when show() is first called.
+The NeutronID is located in an elements classlist, and is generated when display() is first called.
 Using this system Neutron can share HTML elements that do not have a regular HTML id,
 for example HTML elements returned by getElementsByTagName().
-This is beacuse every NeutronID is an unique UUID.
+Every NeutronID is an UUID.
 
 """
 
@@ -24,370 +22,13 @@ def createNeutronId(tag):
 
     return NeutronID
 
-def __CreateElement(window, tag, content, id, args):
-    soup = BeautifulSoup(window.webview.html, features="lxml")
-
-    if id:
-        elem = soup.new_tag(tag, id=id, attrs=args)
-    else:
-        elem = soup.new_tag(tag, attrs=args)
-
-    if type(content) == HTMLelement:
-        soup = BeautifulSoup(str(soup).replace(str(content), "", 1), features="lxml")
-        contentParsed = BeautifulSoup(str(content), 'html.parser')
-        elem.append(contentParsed)
-    else:
-        elem.string = str(content)
-
-    NeutronID = createNeutronId(elem)
-
-    soup.body.append(elem)
-
-    # Remove old element
-
-    window.setHtml(soup)
-    return HTMLelement(window, NeutronID, elem)
-
-
-# For HTML elements ment for containing other elements i.e div
-def __CreateContainer(window, tag, children, id, args):
-    soup = BeautifulSoup(window.webview.html, features="lxml")
-
-    # Remove children from body
-    for child in children:
-        soup = str(soup)[::-1].replace(str(child)[::-1], "", 1)[::-1]
-
-    soup = BeautifulSoup(soup, features="lxml")
-
-    if id:
-        elem = soup.new_tag(tag, id=id, attrs=args)
-    else:
-        elem = soup.new_tag(tag, attrs=args)
-
-    for child in children:
-        # Make children into tags
-        childParsed = BeautifulSoup(str(child), 'html.parser')
-        elem.append(childParsed)
-
-    NeutronID = createNeutronId(elem)
-
-    soup.body.append(elem)
-    window.setHtml(soup)
-    return HTMLelement(window, NeutronID, elem)
-
-
-# Content sectioning #
-
-def Adress(window, children=[], id=None, **args):
-    return __CreateContainer(window, "adress", children, id, args)
-
-
-def Article(window, children=[], id=None, **args):
-    return __CreateContainer(window, "article", children, id, args)
-
-
-def Aside(window, children=[], id=None, **args):
-    return __CreateContainer(window, "aside", children, id, args)
-
-
-def Footer(window, children=[], id=None, **args):
-    return __CreateContainer(window, "footer", children, id, args)
-
-
-def Header(window, content="", id=None, **args):
-    return __CreateElement(window, "header", content, id, args)
-
-
-def H(window, content="", id=None, type=1, **args):
-    return __CreateElement(window, "h" + str(type), content, id, args)
-
-
-def H1(window, content="", id=None, **args):
-    return H(window=window, content=content, id=id, type=1, **args)
-
-
-def H2(window, content="", id=None, **args):
-    return H(window=window, content=content, id=id, type=2, **args)
-
-
-def H3(window, content="", id=None, **args):
-    return H(window=window, content=content, id=id, type=3, **args)
-
-
-def H4(window, content="", id=None, **args):
-    return H(window=window, content=content, id=id, type=4, **args)
-
-
-def H5(window, content="", id=None, **args):
-    return H(window=window, content=content, id=id, type=5, **args)
-
-
-def H6(window, content="", id=None, **args):
-    return H(window=window, content=content, id=id, type=6, **args)
-
-
-def Main(window, children=[], id=None, **args):
-    return __CreateContainer(window, "main", children, id, args)
-
-
-def Nav(window, children=[], id=None, **args):
-    return __CreateContainer(window, "nav", children, id, args)
-
-
-def Section(window, children=[], id=None, **args):
-    return __CreateContainer(window, "section", children, id, args)
-
-
-# Text content #
-
-def Blockquote(window, content="", id=None, **args):
-    return __CreateElement(window, "blockquote", content, id, args)
-
-
-def Dd(window, content="", id=None, **args):
-    return __CreateElement(window, "dd", content, id, args)
-
-
-def Div(window, id=None, children=[], **args):
-    return __CreateContainer(window, "div", children, id, args)
-
-
-def Dl(window, content="", id=None, **args):
-    return __CreateElement(window, "dl", content, id, args)
-
-
-def Dt(window, content="", id=None, **args):
-    return __CreateElement(window, "dt", content, id, args)
-
-
-def Figcaption(window, content="", id=None, **args):
-    return __CreateElement(window, "figcaption", content, id, args)
-
-
-def Figure(window, id=None, children=[], **args):
-    return __CreateContainer(window, "Figure", children, id, args)
-
-
-def Hr(window, content="", id=None, **args):
-    return __CreateElement(window, "Hr", content, id, args)
-
-
-def Li(window, content="", id=None, **args):
-    return __CreateElement(window, "li", content, id, args)
-
-
-def Ol(window, id=None, children=[], **args):
-    return __CreateContainer(window, "ol", children, id, args)
-
-
-def P(window, content="", id=None, **args):
-    return __CreateElement(window, "p", content, id, args)
-
-
-def P(window, content="", id=None, **args):
-    return __CreateElement(window, "p", content, id, args)
-
-
-def Pre(window, content="", id=None, **args):
-    return __CreateElement(window, "pre", content, id, args)
-
-
-def Ul(window, id=None, children=[], **args):
-    return __CreateContainer(window, "Ul", children, id, args)
-
-
-# Image and multimedia #
-
-def Area(window, content="", id=None, **args):
-    return __CreateElement(window, "area", content, id, args)
-
-
-def Audio(window, content="", id=None, **args):
-    return __CreateElement(window, "audio", content, id, args)
-
-
-def Img(window, content="", id=None, **args):
-    return __CreateElement(window, "img", content, id, args)
-
-
-def Map(window, id=None, children=[], **args):
-    return __CreateContainer(window, "Map", children, id, args)
-
-
-def Track(window, content="", id=None, **args):
-    return __CreateElement(window, "track", content, id, args)
-
-
-def Video(window, content="", id=None, **args):
-    return __CreateElement(window, "video", content, id, args)
-
-
-# Embedded content #
-
-def Embed(window, content="", id=None, **args):
-    return __CreateElement(window, "embed", content, id, args)
-
-
-def Iframe(window, content="", id=None, **args):
-    return __CreateElement(window, "iframe", content, id, args)
-
-
-def Object(window, content="", id=None, **args):
-    return __CreateElement(window, "object", content, id, args)
-
-
-def Param(window, content="", id=None, **args):
-    return __CreateElement(window, "param", content, id, args)
-
-
-def Picture(window, id=None, children=[], **args):
-    return __CreateContainer(window, "picture", children, id, args)
-
-
-def Portal(window, content="", id=None, **args):
-    return __CreateElement(window, "portal", content, id, args)
-
-
-def Source(window, content="", id=None, **args):
-    return __CreateElement(window, "source", content, id, args)
-
-
-# SVG and MathML #
-
-def Svg(window, content="", id=None, **args):
-    return __CreateElement(window, "svg", content, id, args)
-
-
-def Math(window, content="", id=None, **args):
-    return __CreateElement(window, "math", content, id, args)
-
-
-# Table content #
-
-def Caption(window, content="", id=None, **args):
-    return __CreateElement(window, "caption", content, id, args)
-
-
-def Col(window, content="", id=None, **args):
-    return __CreateElement(window, "col", content, id, args)
-
-
-def Colgroup(window, content="", id=None, **args):
-    return __CreateElement(window, "colgroup", content, id, args)
-
-
-def Table(window, id=None, children=[], **args):
-    return __CreateContainer(window, "table", children, id, args)
-
-
-def Tbody(window, id=None, children=[], **args):
-    return __CreateContainer(window, "tbody", children, id, args)
-
-
-def Td(window, content="", id=None, **args):
-    return __CreateElement(window, "td", content, id, args)
-
-
-def Tfoot(window, id=None, children=[], **args):
-    return __CreateContainer(window, "tfoot", children, id, args)
-
-
-def Th(window, content="", id=None, **args):
-    return __CreateElement(window, "th", content, id, args)
-
-
-def Thead(window, id=None, children=[], **args):
-    return __CreateContainer(window, "thead", children, id, args)
-
-
-def Tr(window, id=None, children=[], **args):
-    return __CreateContainer(window, "tr", children, id, args)
-
-
-# Forms #
-
-def Button(window, content="", id=None, **args):
-    return __CreateElement(window, "button", content, id, args)
-
-
-def Datalist(window, id=None, children=[], **args):
-    return __CreateContainer(window, "datalist", children, id, args)
-
-
-def Fieldset(window, id=None, children=[], **args):
-    return __CreateContainer(window, "fieldset", children, id, args)
-
-
-def Form(window, id=None, children=[], **args):
-    return __CreateContainer(window, "form", children, id, args)
-
-
-def Input(window, content="", id=None, **args):
-    return __CreateElement(window, "input", content, id, args)
-
-
-def Label(window, content="", id=None, **args):
-    return __CreateElement(window, "label", content, id, args)
-
-
-def Legend(window, content="", id=None, **args):
-    return __CreateElement(window, "legend", content, id, args)
-
-
-def Meter(window, content="", id=None, **args):
-    return __CreateElement(window, "meter", content, id, args)
-
-
-def Optgroup(window, id=None, children=[], **args):
-    return __CreateContainer(window, "optgroup", children, id, args)
-
-
-def Option(window, content="", id=None, **args):
-    return __CreateElement(window, "option", content, id, args)
-
-
-def Output(window, id=None, children=[], **args):
-    return __CreateContainer(window, "output", children, id, args)
-
-
-def Progress(window, content="", id=None, **args):
-    return __CreateElement(window, "progress", content, id, args)
-
-
-def Select(window, id=None, children=[], **args):
-    return __CreateContainer(window, "select", children, id, args)
-
-
-def Textarea(window, content="", id=None, **args):
-    return __CreateElement(window, "textarea", content, id, args)
-
-
-# Interactive elements #
-
-def Details(window, id=None, children=[], **args):
-    return __CreateContainer(window, "details", children, id, args)
-
-
-def Dialog(window, content="", id=None, **args):
-    return __CreateElement(window, "dialog", content, id, args)
-
-
-def Menu(window, id=None, children=[], **args):
-    return __CreateContainer(window, "menu", children, id, args)
-
-
-def Summary(window, content="", id=None, **args):
-    return __CreateElement(window, "summary", content, id, args)
-
 
 # Web componets #
 
-
-
-# Does not contain global event handlers
+# TODO: Add event Attributes
 HTMLelementAttributes = ['value', 'accept', 'action', 'align', 'allow', 'alt', 'autocapitalize', 'autocomplete',
                          'autofocus', 'autoplay', 'background', 'bgcolor', 'border', 'buffered', 'capture', 'challenge',
-                         'charset', 'checked', 'cite', 'className', 'code', 'codebase', 'color', 'cols', 'colspan',
+                         'charset', 'checked', 'cite', 'id', 'className', 'code', 'codebase', 'color', 'cols', 'colspan',
                          'content', 'contenteditable', 'contextmenu', 'controls', 'coords', 'crossorigin', 'csp ',
                          'data', 'datetime', 'decoding', 'default', 'defer', 'dir', 'dirname', 'disabled', 'download',
                          'draggable', 'enctype', 'enterkeyhint', 'for_', 'form', 'formaction', 'formenctype',
@@ -399,92 +40,118 @@ HTMLelementAttributes = ['value', 'accept', 'action', 'align', 'allow', 'alt', '
                          'poster', 'preload', 'radiogroup', 'readonly', 'referrerpolicy', 'rel', 'required', 'reversed',
                          'rows', 'rowspan', 'sandbox', 'scope', 'scoped', 'selected', 'shape', 'size', 'sizes', 'slot',
                          'span', 'spellcheck', 'src', 'srcdoc', 'srclang', 'srcset', 'start', 'step', 'style',
-                         'summary', 'tabindex', 'target', 'title', 'translate', 'type', 'usemap', 'width', 'wrap']
+                         'summary', 'tabindex', 'target', 'title', 'translate', 'type', 'usemap', 'width', 'wrap',
+                         'onblur', 'onchange', 'oncontextmenu', 'onfocus', 'oninput', 'oninvalid', 'onreset', 'onsearch',
+                         'onselect', 'onsubmit', 'onkeydown', 'onkeypress', 'onkeyup', 'onclick', 'ondblclick', 'onmousedown',
+                         'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onwheel', 'ondrag', 'ondragend',
+                         'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onscroll', 'oncopy', 'oncut',
+                         'onpaste', 'onabort', 'oncanplay', 'oncanplaythrough', 'oncuechange', 'ondurationchange', 'onemptied', 'onended',
+                         'onerror', 'onloadeddata', 'onloadedmetadata', 'onloadstart', 'onpause', 'onplay', 'onplaying', 'onprogress',
+                         'onratechange', 'onseeked', 'onseeking', 'onstalled', 'onsuspend', 'ontimeupdate', 'onvolumechange',
+                         'onwaiting', 'ontoggle',]
 
 
 class HTMLelement:
-    def __init__(self, window, NeutronID, elementHTML=None):
+    def __init__(self, window, NeutronID, elementHTML, domAttatched):
         self.window = window
-        self.elementHTML = elementHTML
+        self.elementHTML = elementHTML # elementHTML is None if element is aquired while window is running
         self.NeutronID = NeutronID
-        if "NeutronID_" not in self.NeutronID:
-            logging.warning("Currupt NeutronID, please report this issue and what lines of code caused it.")
-            if id:
-                classes_from_id = str(self.webview.evaluate_js(f""" '' + document.getElementById("{id}").className;"""))
+        self.domAttatched = domAttatched;
 
-                if "NeutronID_" in classes_from_id.split(' ')[0]:
-                    self.NeutronID = classes_from_id.split(' ')[0]
-                else:
-                    for classname in classes_from_id.split(' '):
-                        if "NeutronID_" in classname:
-                            self.NeutronID = classname
+        if "NeutronID_" not in self.NeutronID:
+            raise ValueError("NeutronID is invalid")
 
     def __str__(self):
         # elementHTML will be set to None if class is called on runtime
-        if self.elementHTML is not None:
-            return str(self.elementHTML)
+        if self.window.running and self.domAttatched:
+            return str(self.window.run_javascript(f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].outerHTML;"""))
         else:
-            return str(self.window.webview.evaluate_js(f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].outerHTML;"""))
+            return str(self.elementHTML)
+
 
     def addEventListener(self, eventHandler, NeutronEvent):
-        if not self.window.running:
+        if self.window.running and self.domAttatched:
+            self.window.run_javascript(
+                f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].addEventListener("{eventHandler}", {NeutronEvent});""");
+        else:
             eventHandler = "on" + eventHandler
-            soup = BeautifulSoup(self.window.webview.html, features="lxml")
+            soup = BeautifulSoup(self.window.html, features="html.parser")
             # Create a new attribute for the event (i.e onclick)
             soup.find_all(class_=self.NeutronID)[0][eventHandler] = NeutronEvent
 
-            self.window.webview.html = str(soup)
+            self.window.html = str(soup)
+
+    def appendChild(self, html_element):
+        if self.window.running and self.domAttatched:
+            soup = BeautifulSoup(str(html_element), features="html.parser")
+            bodyContent = soup.find_all()
+
+            for element in bodyContent:
+                createNeutronId(element)
+
+            self.window.run_javascript(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{str(soup)}';""")
+            return html_element
         else:
-            self.window.webview.evaluate_js(
-                f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].addEventListener("{eventHandler}", {NeutronEvent});""");
-
-    def appendChild(self, html):
-        soup = BeautifulSoup(html, features="lxml")
-        bodyContent = soup.body.find_all()
-
-        for element in bodyContent:
-            createNeutronId(element)
-
-        self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{str(soup)}';""")
-        return html
+            self.elementHTML.append(BeautifulSoup(str(html_element), 'html.parser'))
 
     def append(self, html):
-        soup = BeautifulSoup(html, features="lxml")
-        bodyContent = soup.body.find_all()
+        if self.window.running and self.domAttatched:
+            soup = BeautifulSoup(html, features="html.parser")
+            bodyContent = soup.find_all()
 
-        for element in bodyContent:
-            createNeutronId(element)
+            for element in bodyContent:
+                createNeutronId(element)
 
-        self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{str(soup)}';""")
+            self.window.run_javascript(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{str(soup)}';""")
+        else:
+            self.elementHTML.append(BeautifulSoup(html, 'html.parser'))
 
+    # TODO
     def remove(self):
-        self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].remove();""")
-        
-    # Does not work with global event handlers!!
-    def getAttributes(self):
-        if self.window.running:
-            return self.window.webview.get_elements(f'.{self.NeutronID}')[0]
+        if not self.window.running or not self.domAttatched:
+             raise RuntimeError(""""remove" can only be called while the window is running and element is present on DOM!""")
+
+        self.window.run_javascript(f"""document.getElementsByClassName("{self.NeutronID}")[0].remove();""")
+
+     # Does not work with global event handlers!
+    def getAttribute(self, attribute):
+        if self.window.running and self.domAttatched:
+            return str(self.window.run_javascript(f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].{attribute};"""))
         else:
             return self.elementHTML.attrs
 
-    # Does not work with global event handlers!!
+    # Does not work with global event handlers!
     def setAttribute(self, attribute, value):
-        self.window.webview.evaluate_js(
-            f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].setAttribute("{attribute}", "{value}");""")
-        
+        if self.window.running and self.domAttatched:
+            self.window.run_javascript(
+                f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].setAttribute("{attribute}", "{value}");""")
+        else:
+            self.elementHTML[attribute] = value
+
     def removeAttribute(self, attribute):
-        self.window.webview.evaluate_js(
-            f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].removeAttribute("{attribute}");"""
-        )
+        if self.window.running and self.domAttatched:
+            self.window.run_javascript(
+                f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].removeAttribute("{attribute}");"""
+            )
+        else:
+            del self.elementHTML[attribute]
+
 
     def innerHTML_get(self):
-        return str(self.window.webview.evaluate_js(f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].innerHTML;"""))
+        if self.window.running and self.domAttatched:
+            return str(self.window.run_javascript(f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].innerHTML;"""))
+        else:
+            return self.elementHTML.decode_contents()
 
-    def innerHTML_set(self, val):
-        self.window.webview.evaluate_js(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML = "{val}";""")
+    def innerHTML_set(self, value):
+        if self.window.running and self.domAttatched:
+            self.window.run_javascript(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML = "{value}";""")
+        else:
+            self.elementHTML.clear()
+            self.elementHTML.append(BeautifulSoup(value, 'html.parser'))
 
     innerHTML = property(innerHTML_get, innerHTML_set)
 
     for attribute in HTMLelementAttributes:
         exec(
-            f"{attribute} = property(lambda self: self.getAttributes()['{attribute}'], lambda self, val: self.setAttribute('{attribute}', val))")
+            f"{attribute} = property(lambda self: self.getAttribute('{attribute}'), lambda self, val: self.setAttribute('{attribute}', val))")

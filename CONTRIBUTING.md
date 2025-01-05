@@ -1,23 +1,21 @@
 
 # Contributing
 
-Thanks for contributing! Neutron welcomes everyone to contribute, but first please read below.
+Thanks for considering contributing! Below are guidelines for contributing and how to get started.
 
 ## Getting Started
 
-Neutron is still in its early stages thus has many [to-dos](https://github.com/IanTerzo/Neutron/blob/main/TODO.md). An easy way to get started is to code a to-do. https://github.com/IanTerzo/Neutron/blob/main/TODO.md
+A good way to contribute is to work on a to-do. [to-dos](https://github.com/IanTerzo/Neutron/blob/main/TODO.md).
 
-Another way to get started is to fix issues, you can find new issues in the issues tab. 
-
-
-## Pull Requests And Commits 
-
-If a small change is needed feel free to commit directly, but keep in mind these things:
-
-- Have a good and explanatory name for your commit, e.g. no "Fixed code" or "Added feature".
-  
-- Always test your code before making a commit.  
-
-If you are planning on implementing a bigger feature please fork and clone the project to you machine where you can develop it, once you're done commit the changes to your fork and make a pull request. If your feature doesn't have any problems it will certainly be added. 
+Another way to get started is to fix issues, you can find new issues in the issues tab.
 
 
+## Pull Requests And Commits
+
+If a small fix or update is needed feel free to do a pull request, but keep in mind the following:
+
+- Have a good and explanatory name for your pull request, e.g. no "Fixed code" or "Added feature".
+
+- Always test your code before pushing. (the module must work if it is cloned from source)
+
+If you plan on implementing a new feature or changing a lot of code, please open an issue first to discuss it.

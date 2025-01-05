@@ -1,6 +1,6 @@
 import Neutron
 
-win = Neutron.Window("Example", size=(600, 100), css="def.css")
+win = Neutron.Window("Example", size=(600, 400), css="def.css")
 win.display(file="render.html")
 
 

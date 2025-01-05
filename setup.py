@@ -8,14 +8,14 @@ with codecs.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "READM
 # Setting up
 setup(
     name="neutron-web",
-    version='0.3',
+    version='0.5',
     author="IanTerzo (Ian Baldelli)",
     author_email="ian.baldelli@gmail.com",
     description="Create modern cross-platform apps in Python using HTML and CSS",
     long_description_content_type="text/markdown",
     long_description=long_description,
     packages=['Neutron'],
-    install_requires=['pywebview', 'bs4', 'keyboard', 'lxml'],
+    install_requires=['PyQt6', 'PyQt6-WebEngine', 'bs4', 'asyncio', 'websockets'],
     keywords=['python', 'HTML', 'CSS', 'GUI', 'desktop apps'],
     classifiers=[
         "Development Status :: 4 - Beta",

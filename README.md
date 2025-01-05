@@ -1,13 +1,48 @@
 ![](https://i.ibb.co/wC9LxYw/Neutron-nobg.png)
 
-Neutron allows developers to build native Python apps along with CSS and HTML for frontend design. Based on [pywebview](https://github.com/r0x0r/pywebview).
+Neutron is ment to be an intuative way of creating GUI applications using HTML, CSS and Python. It is built on top of PyQt6 and uses the QtWebEngine.
 
 You can get started contributing via [CONTRIBUTING.md](https://github.com/IanTerzo/Neutron/blob/main/CONTRIBUTING.md).
+
 ## Installation
 
 ```
 pip install neutron-web
 ```
+
+## Example
+For a template project see [TEMPLATE](https://github.com/IanTerzo/Neutron/tree/main/TEMPLATE) or see the [to-do app](https://github.com/IanTerzo/Neutron/tree/main/examples/todo-app).
+
+## Usage
+The Neutron api is designed to be very similar to the JavaScript DOM api. You can imagine the `Window` class as the `document` object in JavaScript (altough it is still missing a lot of features), and the `HTMLElement` class, which is the base class for all HTML elements, as the javascript DOM Element object. The `HTMLElement` class supports most of the attributes the DOM Element object in JavaScript has but is still missing some methods. Ideally you should be able to use Neutron as you would use the JavaScript DOM api, altough there are some differences.
+
+### Neutron features
+
+```python
+Neutron.event(function : Callable)) -> str
+```
+Use this function when passing a python function to an event listener or javascript method that requires a callable as parameter. Return the new javascript "bridge" function as str.
+
+```python
+Window(title: str, css: str, position: Tuple[int, int], size: Tuple[int, int]) -> Window
+```
+Create a window.
+
+```python
+Window.run_javascript(javascript: str) -> str
+```
+Evaluate JavaScript code.
+
+```python
+Window.display(file: str, html: str, pyfunctions: List[Callable], encoding: str) -> None
+```
+Used to parse your html code. You run it before showing the window. It takes a path to your htlm file or html code (if file is not provided), a list of python functions and an encoding. The encoding is the encoding of your html file. The python functions are the functions you want to able to directly call from your html file. See the to-do app example.
+
+```python
+Window.show() -> None / Window.close() -> None
+```
+Show and close the window.
+
 
 ## Building your project
 
@@ -19,80 +54,3 @@ pyinstaller YOUR_PYTHON_FILE.py --noconsole --onefile --add-data="YOUR_HTML_FILE
 ```
 
 You don't need to use `--add-data` if your project doesn't have a CSS or HTML file
-
-## Examples
-
-### Full example
-
-For a fully set up example project see [TEMPLATE](https://github.com/IanTerzo/Neutron/tree/main/TEMPLATE). The project is build how it's intended, meaning it has a CSS and HTML file for the design and a Python file for the logic. (It is comparable to how websites using JavaScript are built).
-
-### Other examples
-
-Althought not recommended for big projects, it's possible to create an app using only a Python file.
-```py
-import Neutron
-
-win = Neutron.Window("Example")
-
-HeaderObject = Neutron.elements.Header(win, id="title", content="Hello")
-
-
-def setName():
-    HeaderObject.setAttribute("style", "color: red;")
-    HeaderObject.innerHTML = "Hello world!"
-    win.getElementById("submit").innerHTML = "clicked!"
-
-
-Neutron.elements.Button(win, id="submit", content="Hi", onclick=Neutron.event(setName))
-
-win.show()
-```
-
-Another example featuring in-python HTML:
-```py
-import Neutron
-
-win = Neutron.Window("Example")
-
-def setName():
-    name = win.getElementById("inputName").value
-    win.getElementById("title").innerHTML = "Hello: " + name
-
-
-win.display(f"""
-
-<!DOCTYPE html>
-<html>
-   <head lang="en">
-      <meta charset="UTF-8">
-   </head>
-   <body>
-      <h1 id="title">Hello: </h1>
-      <input id="inputName">
-      <button id="submitName" onclick="setName()">Submit</button>
-   </body>
-</html>
-""", pyfunctions=[setName]) # Link up any Python functions so that they can be used inside the HTML
-win.show()
-```
-### Loader 
-
-To resolve slow loading times for bigger projects, Neutron features a loader system seen here:
-```py
-import Neutron
-
-win = Neutron.Window("Example", size=(600,100))
-
-# The loader covers while all the other elements and css loads
-win.loader(content="<h1>Loading App...</h1>", color="#fff", after=lambda: win.toggle_fullscreen())
-
-```
-### Multiple windows
-
-To create another window for example when a fuction is called you need to use the `childwindow` argument. 
-```
-def createNewWindow():
-    win = Neutrontest.Window("Example", size=(600, 100), childwindow=True)
-    win.display(file="secondwindow.html")
-    win.show()
-```
