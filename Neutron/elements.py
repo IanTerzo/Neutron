@@ -52,9 +52,9 @@ HTMLelementAttributes = ['value', 'accept', 'action', 'align', 'allow', 'alt', '
 
 
 class HTMLelement:
-    def __init__(self, window, NeutronID, elementHTML, domAttatched):
+    def __init__(self, window, NeutronID, element_soup, domAttatched):
         self.window = window
-        self.elementHTML = elementHTML # elementHTML is None if element is aquired while window is running
+        self.element_soup = element_soup # element_soup is None if element is aquired while window is running
         self.NeutronID = NeutronID
         self.domAttatched = domAttatched;
 
@@ -62,11 +62,11 @@ class HTMLelement:
             raise ValueError("NeutronID is invalid")
 
     def __str__(self):
-        # elementHTML will be set to None if class is called on runtime
+        # element_soup will be set to None if class is called on runtime
         if self.window.running and self.domAttatched:
             return str(self.window.run_javascript(f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].outerHTML;"""))
         else:
-            return str(self.elementHTML)
+            return str(self.element_soup)
 
 
     def addEventListener(self, eventHandler, NeutronEvent):
@@ -92,7 +92,7 @@ class HTMLelement:
             self.window.run_javascript(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{str(soup)}';""")
             return html_element
         else:
-            self.elementHTML.append(BeautifulSoup(str(html_element), 'html.parser'))
+            self.element_soup.append(BeautifulSoup(str(html_element), 'html.parser'))
 
     def append(self, html):
         if self.window.running and self.domAttatched:
@@ -104,7 +104,7 @@ class HTMLelement:
 
             self.window.run_javascript(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML += '{str(soup)}';""")
         else:
-            self.elementHTML.append(BeautifulSoup(html, 'html.parser'))
+            self.element_soup.append(BeautifulSoup(html, 'html.parser'))
 
     # TODO
     def remove(self):
@@ -118,7 +118,7 @@ class HTMLelement:
         if self.window.running and self.domAttatched:
             return str(self.window.run_javascript(f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].{attribute};"""))
         else:
-            return self.elementHTML.attrs
+            return self.element_soup.attrs
 
     # Does not work with global event handlers!
     def setAttribute(self, attribute, value):
@@ -126,7 +126,7 @@ class HTMLelement:
             self.window.run_javascript(
                 f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].setAttribute("{attribute}", "{value}");""")
         else:
-            self.elementHTML[attribute] = value
+            self.element_soup[attribute] = value
 
     def removeAttribute(self, attribute):
         if self.window.running and self.domAttatched:
@@ -134,21 +134,21 @@ class HTMLelement:
                 f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].removeAttribute("{attribute}");"""
             )
         else:
-            del self.elementHTML[attribute]
+            del self.element_soup[attribute]
 
 
     def innerHTML_get(self):
         if self.window.running and self.domAttatched:
             return str(self.window.run_javascript(f""" '' + document.getElementsByClassName("{self.NeutronID}")[0].innerHTML;"""))
         else:
-            return self.elementHTML.decode_contents()
+            return self.element_soup.decode_contents()
 
     def innerHTML_set(self, value):
         if self.window.running and self.domAttatched:
             self.window.run_javascript(f"""document.getElementsByClassName("{self.NeutronID}")[0].innerHTML = "{value}";""")
         else:
-            self.elementHTML.clear()
-            self.elementHTML.append(BeautifulSoup(value, 'html.parser'))
+            self.element_soup.clear()
+            self.element_soup.append(BeautifulSoup(value, 'html.parser'))
 
     innerHTML = property(innerHTML_get, innerHTML_set)
 
