@@ -14,7 +14,7 @@ pip install neutron-web
 For a template project see [TEMPLATE](https://github.com/IanTerzo/Neutron/tree/main/TEMPLATE) or see the [to-do app](https://github.com/IanTerzo/Neutron/tree/main/examples/todo-app).
 
 ## Usage
-The Neutron api is designed to be very similar to the JavaScript DOM api. You can imagine the `Window` class as the `document` object in JavaScript (altough it is still missing a lot of features), and the `HTMLElement` class, which is the base class for all HTML elements, as the javascript DOM Element object. The `HTMLElement` class supports most of the attributes the DOM Element object in JavaScript has but is still missing some methods. Ideally you should be able to use Neutron as you would use the JavaScript DOM api, altough there are some differences.
+The Neutron api is designed to be very similar to the JavaScript DOM api. You can imagine the `Window` class as the `document` object in JavaScript (altough it is still missing a lot of features). Ideally you should be able to use Neutron as you would use the JavaScript DOM api, altough there are some differences.
 
 ### Neutron features
 
@@ -46,7 +46,7 @@ Show and close the window.
 
 ## Building your project
 
-To build a Neutron project you first need pyinstaller, install pyinstaller throught pip: `pip install pyinstaller`. Then run the script below in your command prompt/terminal. You can also use other programs to build your project such as py2exe if you prefer.
+To build a Neutron project you first need pyinstaller, install pyinstaller through pip: `pip install pyinstaller`. Then run the script below in your command prompt/terminal. You can also use other programs to build your project such as py2exe if you prefer.
 
 > **Note:** If you are on linux use ":" instead of ";"
 ```
