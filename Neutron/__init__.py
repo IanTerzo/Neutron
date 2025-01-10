@@ -53,21 +53,21 @@ class ListenerHTTPServer(SimpleHTTPRequestHandler):
             self.end_headers()
 
 
-def start_listener_server():
-    httpd = HTTPServer(('', 8764), ListenerHTTPServer)
+def start_listener_server(port):
+    httpd = HTTPServer(('', port), ListenerHTTPServer)
     httpd.serve_forever()
 
 class WebSocketSendServer(QThread):
     client = None
 
-    def __init__(self, host="localhost", port=8765):
+    def __init__(self, port):
         super().__init__()
-        self.host = host
-        self.port = port
         self.pending_response = None
+        self.port = port
 
     async def handler(self, websocket):
         self.client = websocket
+
         try:
             while True:
                 try:
@@ -85,7 +85,7 @@ class WebSocketSendServer(QThread):
             self.client = None
 
     async def start_server(self):
-        async with websockets.serve(self.handler, self.host, self.port):  # Optional max size for messages
+        async with websockets.serve(self.handler, "localhost", self.port):  # Optional max size for messages
             await asyncio.Future()  # Run forever
 
     async def send_and_wait(self, message: str) -> str:
@@ -117,12 +117,15 @@ def event(function):
         raise TypeError("Event attribute is not a function!")
 
 class Window:
-    def __init__(self, title, css=None, position=(300, 300), size=(900, 600)):
+    def __init__(self, title, css=None, position=(300, 300), size=(900, 600), listener_port=22943, sender_port=22944):
         self.title = title
         self.css = css
         self.position = position
         self.size = size
         self.running = False
+
+        self.listener_port = listener_port
+        self.sender_port = sender_port
 
         self.view = None
         self.qt_window = None;
@@ -161,7 +164,7 @@ class Window:
 
         bridge_html = """
         <script>
-        const commandSocket = new WebSocket("ws://localhost:8765");
+        const commandSocket = new WebSocket("ws://localhost:""" + str(self.sender_port) + """");
 
         commandSocket.onopen = function() {
             console.log("WebSocket connection opened");
@@ -185,7 +188,7 @@ class Window:
         };
 
         function bridge(func, ...params) {
-            const url = 'http://localhost:8764';
+            const url = 'http://localhost:""" + str(self.listener_port) + """';
             const data = {
                 type: 'bridge',
                 function: func,
@@ -205,6 +208,7 @@ class Window:
         };
         """
 
+
         # add registered python function
         if pyfunctions:
             for function in pyfunctions:
@@ -215,7 +219,7 @@ class Window:
 
         # add stylesheet if needed
         if self.css:
-            bridge_html += f'<link rel="stylesheet" href="http://localhost:8764/{self.css}">'
+            bridge_html += f'<link rel="stylesheet" href="http://localhost:{self.listener_port}/{self.css}">'
 
 
         # Append the new HTML to the <head> section
@@ -233,7 +237,7 @@ class Window:
 
         # Link all filereads to the http server
         base = soup.new_tag('base')
-        base['href'] = "http://localhost:8764/"
+        base['href'] = f"http://localhost:{self.listener_port}/"
 
         self.html = str(soup)
 
@@ -243,16 +247,16 @@ class Window:
         size = self.size
 
         # Start bridge server
-        server_thread = threading.Thread(target=start_listener_server)
+        server_thread = threading.Thread(target=start_listener_server, args=(self.listener_port,))
         server_thread.daemon = True  # Ensures the thread will exit when the main program exits
         server_thread.start()
 
         # Start websocket server
-        self.websocket_server = WebSocketSendServer()
+        self.websocket_server = WebSocketSendServer(self.sender_port)
         self.websocket_server.start()
 
         # Create window
-        app = QApplication([""])
+        app = QApplication(sys.argv)
 
         window = QMainWindow()
         window.setWindowTitle(title)
